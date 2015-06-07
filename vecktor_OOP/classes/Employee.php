@@ -1,25 +1,34 @@
 <?php
 
+//Абстрактный класс Employee - сотрудник
 abstract class Employee {
+    // Скрытые свойства класса
     protected $payment;
     protected $coffee;
     protected $paper;
     protected $rank;
     protected $boss;
 
+    // Конструктор
+    // Заполняем ранг
+    // И является ли сотрудник руководителем
     public function __construct($rank, $boss)
     {
         $this->setRank($rank);
         $this->setBoss($boss);
     }
 
-
+    // Метод для перерасчета зарплаты
     private function recalculationPayment(){
+
+        // Получаем все необходимые данные
         $isBoss = $this->getBoss();
         $rank = $this->getRank();
         $payment = $this->getPayment();
         $coffee = $this->getCoffee();
 
+        // Если сотрудник руководитель
+        // Пересчитываем с дополнительным коэффициентом
         if($isBoss)
         {
             switch($rank)
@@ -50,6 +59,8 @@ abstract class Employee {
             $this->coffee = $coffee * 2;
             $this->paper = 0;
         }
+        // Если же нет то
+        // Перерасчитываем без дополнительного коэффициента
         else
         {
             switch($rank) {
@@ -68,6 +79,21 @@ abstract class Employee {
                     break;
             }
         }
+    }
+
+    // Методы для доступа к свойствам класса
+
+    public function getBoss()
+    {
+        return $this->boss;
+    }
+
+    // Если устанавливаем свойство $boss - руководитель
+    // то необходимо произвести перерасчет зарплаты
+    public function setBoss($boss)
+    {
+        $this->boss = $boss;
+        $this->recalculationPayment();
     }
 
     public function getCoffee()
@@ -110,15 +136,6 @@ abstract class Employee {
         $this->rank = $rank;
     }
 
-    public function getBoss()
-    {
-        return $this->boss;
-    }
 
-    public function setBoss($boss)
-    {
-        $this->boss = $boss;
-        $this->recalculationPayment();
-    }
 
 } 

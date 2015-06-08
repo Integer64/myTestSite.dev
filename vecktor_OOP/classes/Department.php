@@ -8,7 +8,7 @@ abstract class Department{
     protected $employees = [];
 
     // Метод для добавления сотрудника
-    public function addEmployee($employee)
+    public function addEmployee(Employee $employee)
     {
         $this->employees[] = $employee;
     }

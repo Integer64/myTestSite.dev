@@ -6,10 +6,6 @@ abstract class Department{
     // Свойства класса
     protected $title;
     protected $employees = [];
-    protected $wageCosts;
-    protected $coffeeConsumption;
-    protected $paperConsumption;
-    protected $averageDischarge;
 
     // Метод для добавления сотрудника
     public function addEmployee($employee)

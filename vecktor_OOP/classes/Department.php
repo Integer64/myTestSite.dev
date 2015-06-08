@@ -5,20 +5,23 @@ abstract class Department{
 
     // Свойства класса
     protected $title;
-    protected $employees = [];
+    protected $employees;
+
+    public function __construct(){
+        $this->employees = new OneSpecimenPerHashStorage();
+    }
 
     // Метод для добавления сотрудника
     public function addEmployee(Employee $employee)
     {
-        $this->employees[] = $employee;
+        $this->employees->offsetSet($employee);
     }
 
     // Метод для удаления сотрудника
     public function deleteEmployee(Employee $employee){
         $employees = $this->getEmployees();
-        if(array_key_exists($employee, $this->getEmployees())){
-            $key_employee = array_search($employee,$employees, true);
-            unset($employees[$key_employee]);
+        if($employees->offsetExists($employee)){
+            $employees->offsetUnset($employee);
             $this->employees = $employees;
         }
     }
@@ -26,7 +29,7 @@ abstract class Department{
     // Метод для подсчета общиего кол-ва сотрудников
     public function getCountEmployees()
     {
-        return count($this->getEmployees());
+        return $this->employees->count();
     }
 
     // Метод для получения общей зарплаты

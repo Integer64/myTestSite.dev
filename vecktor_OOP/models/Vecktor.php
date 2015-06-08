@@ -92,7 +92,7 @@ class Vecktor {
     // Метод для заполнения департаментов.
     // 1 параметр - департамент
     // 2 параметр - массив с сотрудниками
-    private function fillTheDepartment($department,$addToDepartment)
+    private function fillTheDepartment(Department $department,$addToDepartment)
     {
         foreach($addToDepartment as $item)
         {

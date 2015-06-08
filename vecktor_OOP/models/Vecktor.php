@@ -26,12 +26,13 @@ class Vecktor {
         // Массив сотрудников.
         // Для департамента закупок
         $employeesDepartmentOfPurchases = [
-            array(9 => new Manager(1, false)),
-            array(3 => new Manager(2, false)),
-            array(2 => new Manager(3, false)),
-            array(2 => new Marketer(1, false)),
-            array(1 => new Manager(2, true))
+            array(9 => ['Manager', 1, false]),
+            array(3 => ['Manager', 2, false]),
+            array(2 => ['Manager', 3, false]),
+            array(2 => ['Marketer', 1, false]),
+            array(1 => ['Manager', 2, true])
         ];
+        $this->fillTheDepartment($this->departmentOfPurchases, $employeesDepartmentOfPurchases);
 
         // Вызываем метод для заполнения департамента
         // 1 параметр - департамент
@@ -41,11 +42,11 @@ class Vecktor {
         // Массив сотрудников.
         // Для департамента продаж
         $employeesSalesDepartment = [
-            array(12 => new Manager(1, false)),
-            array(6 => new Marketer(1, false)),
-            array(3 => new Analyst(1, false)),
-            array(2 => new Analyst(2, false)),
-            array(1 => new Marketer(2, true))
+            array(12 => ['Manager', 1, false]),
+            array(6 =>  ['Marketer', 1, false]),
+            array(3 =>  ['Analyst', 1, false]),
+            array(2 =>  ['Analyst', 2, false]),
+            array(1 =>  ['Marketer', 2, true])
         ];
 
         // Вызываем метод для заполнения департамента
@@ -56,11 +57,11 @@ class Vecktor {
         // Массив сотрудников.
         // Для департамента рекламы
         $employeesDepartmentOfAdvertising = [
-            array(15 => new Marketer(1, false)),
-            array(10 => new Marketer(2, false)),
-            array(8 => new Manager(1, false)),
-            array(2 => new Engineer(1, false)),
-            array(1 => new Marketer(3, true)),
+            array(15 => ['Marketer', 1, false]),
+            array(10 => ['Marketer', 2, false]),
+            array(8 =>  ['Manager', 1, false]),
+            array(2 => ['Engineer', 1, false]),
+            array(1 => ['Marketer', 3, true]),
         ];
 
         // Вызываем метод для заполнения департамента
@@ -71,10 +72,10 @@ class Vecktor {
         // Массив сотрудников.
         // Для департамента логистики
         $employeesDepartmentOfLogistics = [
-            array(13 => new Manager(1, false)),
-            array(5 => new Manager(2, false)),
-            array(5 => new Engineer(1, false)),
-            array(1 => new Manager(1, true)),
+            array(13 => ['Manager', 1, false]),
+            array(5 =>  ['Manager', 2, false]),
+            array(5 =>  ['Engineer', 1, false]),
+            array(1 =>  ['Manager', 1, true]),
         ];
 
         // Вызываем метод для заполнения департамента
@@ -100,7 +101,8 @@ class Vecktor {
             {
                 for($i = 0; $i < $count; $i++)
                 {
-                   $department->addEmployee($employee);
+                    $em = new $employee[0]($employee[1],$employee[2]);
+                   $department->addEmployee($em);
                }
             }
         }

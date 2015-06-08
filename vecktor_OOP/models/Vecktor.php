@@ -11,7 +11,7 @@ class Vecktor {
 
     // Массив для департаментов
     // нужен для более простого заполнения
-    private $allDepartments = [];
+    protected  $allDepartments = [];
 
     // Конструктор.
     // Заполняем все департаменты работниками
@@ -32,7 +32,6 @@ class Vecktor {
             array(2 => ['Marketer', 1, false]),
             array(1 => ['Manager', 2, true])
         ];
-        $this->fillTheDepartment($this->departmentOfPurchases, $employeesDepartmentOfPurchases);
 
         // Вызываем метод для заполнения департамента
         // 1 параметр - департамент
@@ -154,11 +153,11 @@ class Vecktor {
         }
 
         // Переменные для подсчета строки "Среднее"
-        $averageEmployees = $totalEmployees / 4;
-        $averageWageCosts = $totalWageCosts / 4;
-        $averageCoffeeConsumption = $totalCoffeeConsumption / 4;
-        $averagePaperConsumption = $totalPaperConsumption / 4;
-        $averageAverageDischarge = $totalAverageDischarge / 4;
+        $averageEmployees = round($totalEmployees / 4, 2);
+        $averageWageCosts = round($totalWageCosts / 4, 2);
+        $averageCoffeeConsumption = round($totalCoffeeConsumption / 4, 2);
+        $averagePaperConsumption = round($totalPaperConsumption / 4, 2);
+        $averageAverageDischarge = round($totalAverageDischarge / 4, 2);
 
 
         // Конец таблица

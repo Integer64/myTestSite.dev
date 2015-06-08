@@ -8,7 +8,7 @@ abstract class Department{
     protected $employees;
 
     public function __construct(){
-        $this->employees = new OneSpecimenPerHashStorage();
+        $this->employees = new SplObjectStorage();
     }
 
     // Метод для добавления сотрудника

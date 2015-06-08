@@ -18,11 +18,12 @@ abstract class Department{
     }
 
     // Метод для удаления сотрудника
-    public function deleteEmployee($id){
-        $arr = $this->getEmployees();
-        if(array_key_exists($id, $arr)){
-            unset($this->$arr[$id]);
-            $this->setEmployees($arr);
+    public function deleteEmployee(Employee $employee){
+        $employees = $this->getEmployees();
+        if(array_key_exists($employee, $this->getEmployees())){
+            $key_employee = array_search($employee,$employees, true);
+            unset($employees[$key_employee]);
+            $this->employees = $employees;
         }
     }
 
@@ -35,68 +36,45 @@ abstract class Department{
     // Метод для получения общей зарплаты
     public function getWageCosts()
     {
-        $this->calculateWageCosts();
-        return $this->wageCosts;
-    }
-
-    // Метод для подсчета общеё зарплаты
-    private function calculateWageCosts(){
         $employees = $this->getEmployees();
         $wageCosts = 0;
         foreach($employees as $employee)
         {
             $wageCosts += $employee->getPayment();
         }
-        $this->wageCosts = $wageCosts;
+        return $wageCosts;
     }
 
     // Метод для получение общиего кол-ва литров кофе
     public function getCoffeeConsumption()
     {
-        $this->calculateCoffeeConsumption();
-        return $this->coffeeConsumption;
-    }
-
-    // Метод для подсчета общиего кол-ва литров кофе
-    private function calculateCoffeeConsumption(){
         $employees = $this->getEmployees();
         $coffeeConsumption = 0;
         foreach($employees as $employee)
         {
             $coffeeConsumption += $employee->getCoffee();
         }
-        $this->coffeeConsumption = $coffeeConsumption;
+        return $coffeeConsumption;
     }
 
     // Метод для получение общиего кол-ва бумаг
     public function getPaperConsumption()
     {
-        $this->calculatePaperConsumption();
-        return $this->paperConsumption;
-    }
-
-    // Метод для подсчета общиего кол-ва бумаг
-    private function calculatePaperConsumption(){
         $employees = $this->getEmployees();
         $paperConsumption = 0;
         foreach($employees as $employee)
         {
             $paperConsumption += $employee->getPaper();
         }
-        $this->paperConsumption = $paperConsumption;
+        return $paperConsumption;
     }
+
 
     // Метод для получение среднего расхода зарплаты на кол-во страниц
     public function getAverageDischarge()
     {
-        $this->calculateAverageDischarge();
-        return $this->averageDischarge;
-    }
-
-    // Метод для подсчета среднего расхода зарплаты на кол-во страниц
-    private function calculateAverageDischarge(){
         $average = $this->getWageCosts() / $this->getPaperConsumption();
-        $this->averageDischarge = round($average, 2);
+        return round($average, 2);
     }
 
 

@@ -179,26 +179,19 @@ class Vecktor {
 
     // Метод для вывода данных с смещением вправо
     private function padRight($string,$length){
-        $space="";
 
         // Вычитаем длину строки из колонки
         $length=$length-mb_strlen($string);
-        for($i = 0;$i < $length; $i++){
-            $space = $space." " ;
-        }
-        return $string.$space;
+        $space = str_repeat(" ",$length);
+        return $string . $space;
     }
 
     // Метод для вывода данных с смещением влево
     private function padLeft($string,$length){
-        $space="";
 
         // Вычитаем длину строки из колонки
         $length = $length - mb_strlen($string)+2;
-
-        for ($i = 0; $i < $length; $i++) {
-            $space = $space . " ";
-        }
+        $space = str_repeat(" ",$length);
         $result = $space . $string;
         return $result;
     }

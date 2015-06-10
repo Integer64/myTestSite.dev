@@ -2,7 +2,6 @@
 
 // Класс Вектор
 class Vecktor {
-
     // Департаменты
     public $departmentOfPurchases;
     public $salesDepartment;

@@ -34,7 +34,7 @@ class VecktorVersion3 extends Vecktor{
         // Проходимся по стороджу с работниками
         foreach($employees as $employee){
             // Если работник класса Менеджер
-            if(is_a($employee, 'Manager')){
+            if($employee instanceof Manager){
                 // Заносим его в массив
                 $managers[] = $employee;
             }

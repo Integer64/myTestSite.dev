@@ -29,7 +29,7 @@ class VecktorVersion1 extends Vecktor{
         foreach($employees as $employee){
 
             // Если работник класса Инженер
-            if(is_a($employee, 'Engineer')){
+            if($employee instanceof Engineer){
                 // Заносим его в массив
                 $engineers[] = $employee;
             }

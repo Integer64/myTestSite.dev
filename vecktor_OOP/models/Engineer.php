@@ -4,7 +4,7 @@
 class Engineer extends Employee{
 
     // Свойства класса
-    protected $payment = 200;
+    protected $defaultPayment = 200;
     protected $coffee = 5;
     protected $paper = 50;
 } 

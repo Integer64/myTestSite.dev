@@ -4,7 +4,7 @@
 class Marketer extends Employee{
 
     // Свойства класса
-    protected $payment = 400;
+    protected $defaultPayment = 400;
     protected $coffee = 15;
     protected $paper = 150;
 } 

@@ -14,15 +14,13 @@ abstract class Department{
     // Метод для добавления сотрудника
     public function addEmployee(Employee $employee)
     {
-        $this->employees->offsetSet($employee);
+        $this->employees->attach($employee);
     }
 
     // Метод для удаления сотрудника
     public function deleteEmployee(Employee $employee){
-        $employees = $this->getEmployees();
-        if($employees->offsetExists($employee)){
-            $employees->offsetUnset($employee);
-            $this->employees = $employees;
+        if($this->getEmployees()->contains($employee)){
+            $this->getEmployees()->detach($employee);
         }
     }
 
@@ -41,7 +39,7 @@ abstract class Department{
         {
             $wageCosts += $employee->getPayment();
         }
-        return round($wageCosts, 2);
+        return $wageCosts;
     }
 
     // Метод для получение общиего кол-ва литров кофе
@@ -53,7 +51,7 @@ abstract class Department{
         {
             $coffeeConsumption += $employee->getCoffee();
         }
-        return round($coffeeConsumption, 2);
+        return $coffeeConsumption;
     }
 
     // Метод для получение общиего кол-ва бумаг
@@ -65,7 +63,7 @@ abstract class Department{
         {
             $paperConsumption += $employee->getPaper();
         }
-        return round($paperConsumption, 2);
+        return $paperConsumption;
     }
 
 
@@ -80,11 +78,6 @@ abstract class Department{
     public function getEmployees()
     {
         return $this->employees;
-    }
-
-    public function setEmployees($employees)
-    {
-        $this->employees = $employees;
     }
 
     public function getTitle()

@@ -41,7 +41,7 @@ abstract class Department{
         {
             $wageCosts += $employee->getPayment();
         }
-        return $wageCosts;
+        return round($wageCosts, 2);
     }
 
     // Метод для получение общиего кол-ва литров кофе
@@ -53,7 +53,7 @@ abstract class Department{
         {
             $coffeeConsumption += $employee->getCoffee();
         }
-        return $coffeeConsumption;
+        return round($coffeeConsumption, 2);
     }
 
     // Метод для получение общиего кол-ва бумаг
@@ -65,7 +65,7 @@ abstract class Department{
         {
             $paperConsumption += $employee->getPaper();
         }
-        return $paperConsumption;
+        return round($paperConsumption, 2);
     }
 
 

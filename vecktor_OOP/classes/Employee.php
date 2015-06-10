@@ -3,6 +3,7 @@
 //Абстрактный класс Employee - сотрудник
 abstract class Employee {
     // Скрытые свойства класса
+    protected $defaultPayment = 0;
     protected $payment;
     protected $coffee;
     protected $paper;
@@ -25,7 +26,7 @@ abstract class Employee {
         // Получаем все необходимые данные
         $isBoss = $this->getBoss();
         $rank = $this->getRank();
-        $payment = $this->getPayment();
+        $defaultPayment = $this->defaultPayment;
 
         // Если сотрудник руководитель
         // Пересчитываем с дополнительным коэффициентом
@@ -36,21 +37,21 @@ abstract class Employee {
             {
                 case 1:
                 {
-                    $this->payment += $payment * 0.5;
+                    $this->payment += $defaultPayment * 0.5;
                     break;
                 }
                 case 2:
                 {
-                    $payment += $payment * 0.25;
-                    $payment = $payment + ($payment * 0.5);
-                    $this->payment = $payment;
+                    $defaultPayment += $defaultPayment * 0.25;
+                    $defaultPayment = $defaultPayment + ($defaultPayment * 0.5);
+                    $this->payment = $defaultPayment;
                     break;
                 }
                 case 3:
                 {
-                    $payment += $payment * 0.5;
-                    $payment = $payment + ($payment * 0.5);
-                    $this->payment = $payment;
+                    $defaultPayment += $defaultPayment * 0.5;
+                    $defaultPayment = $defaultPayment + ($defaultPayment * 0.5);
+                    $this->payment = $defaultPayment;
                     break;
                 }
                 default:
@@ -65,15 +66,19 @@ abstract class Employee {
         else
         {
             switch($rank) {
+                case 1: {
+                    $this->payment = $defaultPayment;
+                    break;
+                }
                 case 2: {
-                    $payment += $payment * 0.25;
-                    $this->payment = $payment;
+                    $defaultPayment += $defaultPayment * 0.25;
+                    $this->payment = $defaultPayment;
                     break;
                 }
                 case 3:
                 {
-                    $payment += $payment * 0.5;
-                    $this->payment = $payment;
+                    $defaultPayment += $defaultPayment * 0.5;
+                    $this->payment = $defaultPayment;
                     break;
                 }
                 default:

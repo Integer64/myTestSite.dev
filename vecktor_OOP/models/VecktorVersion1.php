@@ -55,7 +55,8 @@ class VecktorVersion1 extends Vecktor{
         // Высчитываем сколько людей нужно уволить
         $countToFire = ceil(count($engineers) * 0.4);
 
-        $fireEngineers = array_slice($engineers, 0,$countToFire);
+        // Массив под увольнение
+        $fireEngineers = array_slice($engineers, 0, $countToFire);
 
         // Вызываем метод увольния работников
         $this->fire($fireEngineers, $department);

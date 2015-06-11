@@ -25,4 +25,3 @@ echo "\n";
 
 $vector3 = new VecktorVersion3();
 $vector3->printStatistic();
-

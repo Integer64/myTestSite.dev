@@ -19,14 +19,24 @@ class VecktorVersion3 extends Vecktor{
             // Получаем список работников в департаменте
             $employees = $department->getEmployees();
 
-            // Запускаем процесс увелечения ЗП и кофе
-            $this->upgradeManager($employees, $department);
+            // Запускаем процесс апгрейда
+            $this->upgradeManager($employees);
         }
+    }
+
+    // Метод сортировки массива для usort
+    private function compareEmployee(Employee $objectOne, Employee $objectTwo)
+    {
+        if ($objectOne->getRank() == $objectTwo->getRank()) {
+            return 0;
+        }
+        return ($objectOne->getRank() < $objectTwo->getRank()) ? -1 : 1;
     }
 
     // Метод для выяввления инженеров в департаменте
     // 1 параметр - стородж с работниками
-    private function upgradeManager(SplObjectStorage $employees, Department $department){
+    // 2 параметр - департамент
+    private function upgradeManager(SplObjectStorage $employees){
 
         //Массив менеджеров
         $managers = [];
@@ -40,41 +50,25 @@ class VecktorVersion3 extends Vecktor{
             }
         }
 
-        // Высчитываем сколько людей нужно уволить
+        // Высчитываем сколько людей нужно проапгрейдить
         $countToUpgrade = ceil(count($managers) * 0.5);
 
-        // Вызываем метод увольния работников
-        $this->upgrade($countToUpgrade, $managers, $department);
+        // Сортирумем массив
+        usort($managers, array($this, 'compareEmployee'));
+
+        // Массив для повышения
+        $upgradeManagers = array_slice($managers, 0, $countToUpgrade);
+
+        // Вызываем метод апгрейда работников
+        $this->upgrade($upgradeManagers);
     }
 
     // Метод апгрейда работников
-    // Спорная реализация.
-    // Думаю, есть ли возможность сделать все через рекурсию?
-    private function upgrade($countToUpgrade, $engineers, Department $department)
+    private function upgrade($upgradeManagers)
     {
-        // Пока нужно количество работников не уволено
-        while($countToUpgrade > 0)
-        {
-            // Проходимся по массиву с работниками под увольнение
-            foreach($engineers as $key => $engineer)
-            {
-                // Если ешё не уволено
-                // нужное количество работников
-                if($countToUpgrade > 0)
-                {
-                    // Записываем ранг
-                    $rank = $engineer->getRank();
-
-                    // Проверям что ранг работника
-                    // соотвествует ли он наименьшему рангу для апгрейда
-                    if($rank == 1 ||  $rank == 2)
-                    {
-                       $engineer->setRank(++$rank);
-                        // Уменьшаем кол-ва подлежащих апгрейду на 1
-                        $countToUpgrade--;
-                    }
-                }
-            }
+        foreach($upgradeManagers as $manager){
+            $rank = $manager->getRank();
+            $manager->setRank($rank + 1);
         }
     }
 

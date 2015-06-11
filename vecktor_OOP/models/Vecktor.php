@@ -137,11 +137,11 @@ class Vecktor {
 
             // Вывод данных в строку
             echo $this->padRight($department->getTitle(), $col1) .
-                $this->padLeft($department->getCountEmployees(), $col2) .
-                $this->padLeft($department->getWageCosts(),$col3).
-                $this->padLeft($department->getCoffeeConsumption(), $col4) .
-                $this->padLeft($department->getPaperConsumption(), $col5) .
-                $this->padLeft($department->getAverageDischarge(), $col6) . "\n";
+                $this->padLeft(round($department->getCountEmployees(), 2), $col2) .
+                $this->padLeft(round($department->getWageCosts(), 2),$col3).
+                $this->padLeft(round($department->getCoffeeConsumption(), 2), $col4) .
+                $this->padLeft(round($department->getPaperConsumption(), 2), $col5) .
+                $this->padLeft(round($department->getAverageDischarge(), 2), $col6) . "\n";
 
             // Суммируем данные и записываем в переменные
             $totalEmployees += $department->getCountEmployees();
@@ -170,11 +170,11 @@ class Vecktor {
 
         // Вывод "Всего"
         echo $this->padRight("Всего", $col1) .
-            $this->padLeft($totalEmployees, $col2) .
-            $this->padLeft($totalWageCosts,$col3).
-            $this->padLeft($totalCoffeeConsumption, $col4) .
-            $this->padLeft($totalPaperConsumption, $col5) .
-            $this->padLeft($totalAverageDischarge, $col6) . "\n";
+            $this->padLeft(round($totalEmployees, 2), $col2) .
+            $this->padLeft(round($totalWageCosts, 2),$col3).
+            $this->padLeft(round($totalCoffeeConsumption, 2), $col4) .
+            $this->padLeft(round($totalPaperConsumption, 2), $col5) .
+            $this->padLeft(round($totalAverageDischarge, 2), $col6) . "\n";
     }
 
     // Метод для вывода данных с смещением вправо
@@ -188,7 +188,6 @@ class Vecktor {
 
     // Метод для вывода данных с смещением влево
     private function padLeft($string,$length){
-
         // Вычитаем длину строки из колонки
         $length = $length - mb_strlen($string)+2;
         $space = str_repeat(" ",$length);

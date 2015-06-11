@@ -18,8 +18,22 @@ class VecktorVersion1 extends Vecktor{
         }
     }
 
+    // Метод сортировки массива для usort
+    private function compareEmployee(Employee $objectOne, Employee $objectTwo)
+    {
+        if($objectOne->getBoss() || $objectTwo->getBoss()){
+            return 1;
+        }
+        if ($objectOne->getRank() == $objectTwo->getRank()) {
+            return 0;
+        }
+        return ($objectOne->getRank() < $objectTwo->getRank()) ? -1 : 1;
+    }
+
+
     // Метод для выяввления инженеров в департаменте
     // 1 параметр - стородж с работниками
+    // 2 параметр - департамент
     private function fireEngineers(SplObjectStorage $employees, Department $department){
 
         //Массив инженеров
@@ -35,52 +49,23 @@ class VecktorVersion1 extends Vecktor{
             }
         }
 
+        // Сортирумем массив
+        usort($engineers, array($this, 'compareEmployee'));
+
         // Высчитываем сколько людей нужно уволить
         $countToFire = ceil(count($engineers) * 0.4);
 
+        $fireEngineers = array_slice($engineers, 0,$countToFire);
+
         // Вызываем метод увольния работников
-        $this->fire($countToFire, $engineers, $department);
+        $this->fire($fireEngineers, $department);
     }
 
     // Метод увольнения работников
-    // Спорная реализация.
-    // Думаю, есть ли возможность сделать все через рекурсию?
-    private function fire($countToFire, $engineers, Department $department)
+    private function fire($fireEngineers, Department $department)
     {
-        // Проверяемый ранг с наименьшего
-        $CheckRank = 1;
-
-        // Пока нужно количество работников не уволено
-        while($countToFire > 0)
-        {
-            // Проходимся по массиву с работниками под увольнение
-            foreach($engineers as $key => $engineer)
-            {
-                // Если работник не руководитель и ешё не уволено
-                // нужное количество работников
-                if($engineer->getBoss() === false && $countToFire > 0)
-                {
-                    // Проверям что ранг работника
-                    // соотвествует ли он наименьшему рангу для увольнения
-                    if($engineer->getRank() == $CheckRank)
-                    {
-                        // Удаляем из массива работников
-                        unset($engineers[$key]);
-
-                        // Увольняем работника
-                        // Удаляем из стороджа
-                        $department->deleteEmployee($engineer);
-
-                        // Уменьшаем кол-ва подлежащих увольнению на 1
-                        $countToFire--;
-                    }
-                }
-            }
-
-            // После увольнение всех 1 ранг
-            // Нужно проверить следующие ранги
-            // Увеличиваем проверяемый ранг на 1.
-            $CheckRank++;
+        foreach($fireEngineers as $engineer){
+            $department->deleteEmployee($engineer);
         }
     }
 

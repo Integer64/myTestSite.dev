@@ -175,6 +175,7 @@ class Vecktor {
             $this->padLeft(round($totalCoffeeConsumption, 2), $col4) .
             $this->padLeft(round($totalPaperConsumption, 2), $col5) .
             $this->padLeft(round($totalAverageDischarge, 2), $col6) . "\n";
+        echo "\n";
     }
 
     // Метод для вывода данных с смещением вправо
@@ -193,6 +194,14 @@ class Vecktor {
         $space = str_repeat(" ",$length);
         $result = $space . $string;
         return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllDepartments()
+    {
+        return $this->allDepartments;
     }
 
 }

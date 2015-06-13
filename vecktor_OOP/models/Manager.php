@@ -4,7 +4,7 @@
 class Manager extends Employee{
 
     // Свойства класса
-    protected $defaultPayment = 500;
+    protected $payment = 500;
     protected $coffee = 20;
     protected $paper = 200;
 

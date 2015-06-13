@@ -3,7 +3,6 @@
 //Абстрактный класс Employee - сотрудник
 abstract class Employee {
     // Скрытые свойства класса
-    protected $defaultPayment = 0;
     protected $payment;
     protected $coffee;
     protected $paper;
@@ -17,74 +16,6 @@ abstract class Employee {
     {
         $this->rank = $rank;
         $this->boss = $boss;
-        $this->recalculationPayment();
-    }
-
-    // Метод для перерасчета зарплаты
-    private function recalculationPayment(){
-
-        // Получаем все необходимые данные
-        $isBoss = $this->getBoss();
-        $rank = $this->getRank();
-        $defaultPayment = $this->defaultPayment;
-
-        // Если сотрудник руководитель
-        // Пересчитываем с дополнительным коэффициентом
-        if($isBoss)
-        {
-            $coffee = $this->getCoffee();
-            switch($rank)
-            {
-                case 1:
-                {
-                    $this->payment += $defaultPayment * 0.5;
-                    break;
-                }
-                case 2:
-                {
-                    $defaultPayment += $defaultPayment * 0.25;
-                    $defaultPayment = $defaultPayment + ($defaultPayment * 0.5);
-                    $this->payment = $defaultPayment;
-                    break;
-                }
-                case 3:
-                {
-                    $defaultPayment += $defaultPayment * 0.5;
-                    $defaultPayment = $defaultPayment + ($defaultPayment * 0.5);
-                    $this->payment = $defaultPayment;
-                    break;
-                }
-                default:
-                    break;
-            }
-
-            $this->coffee = $coffee * 2;
-            $this->paper = 0;
-        }
-        // Если же нет то
-        // Перерасчитываем без дополнительного коэффициента
-        else
-        {
-            switch($rank) {
-                case 1: {
-                    $this->payment = $defaultPayment;
-                    break;
-                }
-                case 2: {
-                    $defaultPayment += $defaultPayment * 0.25;
-                    $this->payment = $defaultPayment;
-                    break;
-                }
-                case 3:
-                {
-                    $defaultPayment += $defaultPayment * 0.5;
-                    $this->payment = $defaultPayment;
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
     }
 
     // Методы для доступа к свойствам класса
@@ -99,11 +30,13 @@ abstract class Employee {
     public function setBoss($boss)
     {
         $this->boss = $boss;
-        $this->recalculationPayment();
     }
 
     public function getCoffee()
     {
+        if($this->getBoss()){
+            return $this->coffee * 2;
+        }
         return $this->coffee;
     }
 
@@ -112,11 +45,13 @@ abstract class Employee {
     public function setCoffee($coffee)
     {
         $this->coffee = $coffee;
-        $this->recalculationPayment();
     }
 
     public function getPaper()
     {
+        if($this->getBoss()){
+            return 0;
+        }
         return $this->paper;
     }
 
@@ -127,15 +62,64 @@ abstract class Employee {
 
     public function getPayment()
     {
-        return $this->payment;
+        $isBoss = $this->getBoss();
+        $rank = $this->getRank();
+        $payment = $this->payment;
+
+        // Если сотрудник руководитель
+        // Пересчитываем с дополнительным коэффициентом
+        if($isBoss)
+        {
+            switch($rank)
+            {
+                case 1:
+                {
+                    return $payment * 1.5;
+                    break;
+                }
+                case 2:
+                {
+                    return  $payment * 1.875;
+                    break;
+                }
+                case 3:
+                {
+                    return  $payment * 2.25;
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+        // Если же нет то
+        // Перерасчитываем без дополнительного коэффициента
+        else
+        {
+            switch($rank) {
+                case 1: {
+                    return $payment;
+                    break;
+                }
+                case 2: {
+                    return  $payment * 1.25;
+                    break;
+                }
+                case 3:
+                {
+                    return  $payment * 1.5;
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
     }
 
     // Устанавливаем зарплату
     // Делаем перерасчет
     public function setPayment($payment)
     {
-        $this->payment = $payment;
-        $this->recalculationPayment();
+        $this->$payment = $payment;
     }
 
     public function getRank()
@@ -148,7 +132,6 @@ abstract class Employee {
     public function setRank($rank)
     {
         $this->rank = $rank;
-        $this->recalculationPayment();
     }
 
 

@@ -59,9 +59,13 @@ class AnticrisisManagement {
     // Метод сортировки массива для usort
     private function compareEngineers(Employee $objectOne, Employee $objectTwo)
     {
-        if($objectOne->getBoss() || $objectTwo->getBoss()){
+        if($objectOne->getBoss() && !$objectTwo->getBoss()){
             return 1;
         }
+        if(!$objectOne->getBoss() && $objectTwo->getBoss()){
+            return -1;
+        }
+
         if ($objectOne->getRank() == $objectTwo->getRank()) {
             return 0;
         }
@@ -71,7 +75,7 @@ class AnticrisisManagement {
     // Метод для выяввления инженеров в департаменте
     // 1 параметр - стородж с работниками
     // 2 параметр - департамент
-    private function fireEngineers(SplObjectStorage $employees, Department $department){
+    public function fireEngineers(SplObjectStorage $employees, Department $department){
 
         //Массив инженеров
         $engineers = [];
@@ -191,7 +195,11 @@ class AnticrisisManagement {
     {
         foreach($upgradeManagers as $manager){
             $rank = $manager->getRank();
+            try{
             $manager->setRank($rank + 1);
+            } catch (RankException $e){
+                die("Ошибка: {$e->getMessage()}\n");
+            }
         }
     }
 

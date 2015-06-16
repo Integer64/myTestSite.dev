@@ -37,7 +37,11 @@ abstract class Department{
         $wageCosts = 0;
         foreach($employees as $employee)
         {
-            $wageCosts += $employee->getPayment();
+            try {
+                $wageCosts += $employee->getPayment();
+            }catch (RankException $e){
+                die("Ошибка: {$e->getMessage()}\n");
+            }
         }
         return $wageCosts;
     }

@@ -14,19 +14,17 @@ abstract class Employee {
     // И является ли сотрудник руководителем
     public function __construct($rank, $boss)
     {
-        $this->rank = $rank;
-        $this->boss = $boss;
+        $this->setRank($rank);
+        $this->setBoss($boss);
     }
 
     // Методы для доступа к свойствам класса
-
     public function getBoss()
     {
         return $this->boss;
     }
 
-    // Если устанавливаем свойство $boss - руководитель
-    // то необходимо произвести перерасчет зарплаты
+    // Устанавливаем своство босс
     public function setBoss($boss)
     {
         $this->boss = $boss;
@@ -41,7 +39,6 @@ abstract class Employee {
     }
 
     // Устанавливаем количество кофе литров
-    // Делаем перерасчет
     public function setCoffee($coffee)
     {
         $this->coffee = $coffee;
@@ -55,6 +52,7 @@ abstract class Employee {
         return $this->paper;
     }
 
+    // Устанавливаем количество бумаги
     public function setPaper($paper)
     {
         $this->paper = $paper;
@@ -66,52 +64,38 @@ abstract class Employee {
         $rank = $this->getRank();
         $payment = $this->payment;
 
-        // Если сотрудник руководитель
-        // Пересчитываем с дополнительным коэффициентом
-        if($isBoss)
-        {
-            switch($rank)
+        // Перерасчет ЗП взависимости от ранга и является ли сотрудник руководителем
+        switch($rank) {
+            case 1:
             {
-                case 1:
-                {
+                if($isBoss){
                     return $payment * 1.5;
-                    break;
-                }
-                case 2:
-                {
-                    return  $payment * 1.875;
-                    break;
-                }
-                case 3:
-                {
-                    return  $payment * 2.25;
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-        // Если же нет то
-        // Перерасчитываем без дополнительного коэффициента
-        else
-        {
-            switch($rank) {
-                case 1: {
+                }else{
                     return $payment;
-                    break;
                 }
-                case 2: {
-                    return  $payment * 1.25;
-                    break;
-                }
-                case 3:
-                {
-                    return  $payment * 1.5;
-                    break;
-                }
-                default:
-                    break;
+                break;
             }
+            case 2:
+            {
+                if($isBoss){
+                    return  $payment * 1.875;
+                }else{
+                    return  $payment * 1.25;
+                }
+                break;
+            }
+            case 3:
+            {
+                if($isBoss){
+                    return  $payment * 2.25;
+                }else{
+                    return $payment * 1.5;
+                }
+                break;
+            }
+            default:
+                throw new RankException("invalid rank: $rank");
+                break;
         }
     }
 
@@ -131,6 +115,9 @@ abstract class Employee {
     // Делаем перерасчет
     public function setRank($rank)
     {
+        if($rank < 1 || $rank > 3){
+            throw new RankException("invalid rank: $rank");
+        }
         $this->rank = $rank;
     }
 

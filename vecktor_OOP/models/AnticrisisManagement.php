@@ -75,7 +75,7 @@ class AnticrisisManagement {
     // Метод для выяввления инженеров в департаменте
     // 1 параметр - стородж с работниками
     // 2 параметр - департамент
-    public function fireEngineers(SplObjectStorage $employees, Department $department){
+    private function fireEngineers(SplObjectStorage $employees, Department $department){
 
         //Массив инженеров
         $engineers = [];

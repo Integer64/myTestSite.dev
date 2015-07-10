@@ -1,7 +1,6 @@
 <?php
 namespace Application\CatMouse\models;
 
-
 use Application\CatMouse\classes\Animal;
 use \SplObjectStorage;
 
@@ -27,5 +26,10 @@ class Field {
     public function getListOfAnimals()
     {
         return $this->listOfAnimals;
+    }
+
+    public function getSize()
+    {
+        return $this->size;
     }
 }

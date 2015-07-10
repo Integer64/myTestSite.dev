@@ -1,6 +1,8 @@
 <?php
 namespace Application\CatMouse\classes;
 
+use \SplObjectStorage;
+
 abstract class Animal{
     CONST RANDFORWALK = 1;
     private $fieldOfVision;
@@ -9,7 +11,7 @@ abstract class Animal{
     protected $seeAnimals;
 
     public function __construct($fieldOfVision, $cruisingRange){
-        $this->fieldOfVision = $fieldOfVision;
+        $this->fieldOfVision = (int) floor($fieldOfVision/2);
         $this->cruisingRange = $cruisingRange;
     }
 
@@ -45,16 +47,31 @@ abstract class Animal{
 
     protected function getRangeView(){
         $location = $this->getLocation();
-        $cruisingRange = $this->getCruisingRange();
-        $xMin = $location["x"] - $cruisingRange < 0 ? 0 : $location["x"] - $cruisingRange;
-        $xMax = $location["x"] + $cruisingRange;
+        $fieldOfVision = $this->getFieldOfVision();
+        $xMin = $location["x"] - $fieldOfVision < 0 ? 0 : $location["x"] - $fieldOfVision;
+        $xMax = $location["x"] + $fieldOfVision;
         $xRange = ["xMin" => $xMin, "xMax" => $xMax];
 
-        $yMin = $location["y"] - $cruisingRange < 0 ? 0 : $location["y"] - $cruisingRange;
-        $yMax = $location["y"] + $cruisingRange;
+        $yMin = $location["y"] - $fieldOfVision < 0 ? 0 : $location["y"] - $fieldOfVision;
+        $yMax = $location["y"] + $fieldOfVision;
         $yRange = ["yMin" => $yMin, "yMax" => $yMax];
 
         return ["x" => $xRange, "y" => $yRange];
+    }
+
+    public function lookAround(SplObjectStorage $animals)
+    {
+        $this->seeAnimals = new SplObjectStorage();
+        $range = $this->getRangeView();
+        foreach ($animals as $animal) {
+            if ($animal === $this) continue;
+            $animalLocation = $animal->getLocation();
+            if (($animalLocation["x"] >= $range["x"]["xMin"] || $animalLocation["x"] <= $range["x"]["xMax"])
+                && ($animalLocation["y"] >= $range["y"]["yMin"] || $animalLocation["y"] <= $range["y"]["yMax"])
+            ) {
+                $this->seeAnimals->attach($animal);
+            }
+        }
     }
 
     abstract public function getLabel();

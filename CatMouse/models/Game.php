@@ -13,7 +13,7 @@ class Game {
 
     public function start(){
         $this->printField();
-        for($i = 0; $i < $this->numberOfTurns; $i++){
+        for($i = 1; $i <= $this->numberOfTurns; $i++){
             echo "Turn № $i\n";
             $this->turn();
             $this->printField();
@@ -44,7 +44,7 @@ class Game {
             for($j = 0; $j < $field->getSize(); $j++){
                 foreach($field->getListOfAnimals() as $animal){
                     $coordinates = $animal->getLocation();
-                    if($i == $coordinates[0] && $j == $coordinates[1]){
+                    if($i == $coordinates["x"] && $j == $coordinates["y"]){
                         echo $animal->getLabel();
                         continue 2;
                     }

@@ -1,12 +1,13 @@
 <?php
 
 // Функция для автоматического подключения классов и моделей
-function load($class){
+function load($class)
+{
     $classParts = explode('\\', $class);
     $classParts[0] = __DIR__;
     unset($classParts[1]);
     $path = implode(DIRECTORY_SEPARATOR, $classParts) . '.php';
-    if (file_exists($path)){
+    if (file_exists($path)) {
         require $path;
     }
 }

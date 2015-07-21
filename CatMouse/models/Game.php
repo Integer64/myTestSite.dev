@@ -1,55 +1,76 @@
 <?php
 namespace Application\CatMouse\models;
 
-
-class Game {
+class Game
+{
     private $numberOfTurns;
     private $field;
 
-    public function __construct($numberOfTurns, Field $field){
+    public function __construct($numberOfTurns, Field $field)
+    {
         $this->numberOfTurns = $numberOfTurns;
         $this->field = $field;
     }
 
-    public function start(){
+    public function start()
+    {
+        echo "This is game field\n";
         $this->printField();
-        for($i = 1; $i <= $this->numberOfTurns; $i++){
+        for ($i = 1; $i <= $this->numberOfTurns; $i++) {
             echo "Turn № $i\n";
             $this->turn();
             $this->printField();
         }
     }
 
-    private function turn(){
+    private function turn()
+    {
         $listOfAnimals = $this->field->getListOfAnimals();
-        foreach($listOfAnimals as $animal){
-            $animal->lookAround($listOfAnimals);
+
+
+        $listToAnimal = new \SplObjectStorage();    // Костыли.
+        foreach ($listOfAnimals as $animal) {        // SplObjectStorage не может в рекурсию вроде как.
+            $listToAnimal->attach($animal);         // Как это побороть не знаю.
+        }                                           // Есть идеи?
+
+        foreach ($listOfAnimals as $animal) {
+            echo "This is: " . $animal->name . "\n";
+            $animal->lookAround($listToAnimal);
+            $animal->walk();
 //            echo "Before \n";
 //            foreach($animal->getLocation() as $coord => $val){
 //                echo "$coord : $val \n";
 //            }
 //            echo "\n";
-            $animal->walk();
 //            echo "After \n";
 //            foreach($animal->getLocation() as $coord => $val){
 //                echo "$coord : $val \n";
 //            }
-//            echo "\n\n";
         }
+
     }
 
-    private function printField(){
+    private function printField()
+    {
         $field = $this->field;
-        for($i = 0; $i < $field->getSize(); $i++){
-            for($j = 0; $j < $field->getSize(); $j++){
-                foreach($field->getListOfAnimals() as $animal){
+        echo "0  ";
+        for ($i = 1; $i <= $field->getSize(); $i++) {
+            echo($i < 10 ? $i . "  " : $i . " ");
+        }
+        echo "\n";
+        for ($i = 1; $i <= $field->getSize(); $i++) {
+
+            echo($i < 10 ? $i . "  " : $i . " ");
+
+            for ($j = 1; $j <= $field->getSize(); $j++) {
+                foreach ($field->getListOfAnimals() as $animal) {
                     $coordinates = $animal->getLocation();
-                    if($i == $coordinates["x"] && $j == $coordinates["y"]){
-                        echo $animal->getLabel();
+                    if ($j == $coordinates["x"] && $i == $coordinates["y"]) {
+                        echo $animal->getLabel() . "  ";
                         continue 2;
                     }
                 }
-                echo ".";
+                echo ".  ";
             }
             echo "\n";
         }

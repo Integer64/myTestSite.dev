@@ -28,23 +28,14 @@ class Game
         $listOfAnimals = $this->field->getListOfAnimals();
 
         $listToAnimal = new \SplObjectStorage();    // Костыли.
-        foreach ($listOfAnimals as $animal) {        // SplObjectStorage не может в рекурсию вроде как.
+        foreach ($listOfAnimals as $animal) {       // SplObjectStorage не может в рекурсию вроде как.
             $listToAnimal->attach($animal);         // Как это побороть не знаю.
-        }                                           // Есть идеи?
+        }
 
         foreach ($listOfAnimals as $animal) {
             echo "This is: " . $animal->name . "\n";
             $animal->lookAround($listToAnimal);
             $animal->walk();
-//            echo "Before \n";
-//            foreach($animal->getLocation() as $coord => $val){
-//                echo "$coord : $val \n";
-//            }
-//            echo "\n";
-//            echo "After \n";
-//            foreach($animal->getLocation() as $coord => $val){
-//                echo "$coord : $val \n";
-//            }
         }
 
     }

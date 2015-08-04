@@ -8,8 +8,16 @@ class Cat extends Animal
     private $naturalEnemies = '\Application\CatMouse\models\Dog';
     private $huntAnimals = '\Application\CatMouse\models\Mouse';
 
+    private $countTurns = 0;
+
     public function walk()
     {
+        $this->countTurns += 1;
+        if ($this->countTurns > 9){
+            $this->countTurns = 1;
+        }
+        if ($this->countTurns > 8) return;
+
         $location = $this->getLocation();
         $seeAnimals = $this->getSeeAnimals();
         $huntAnimals = $this->huntAnimals;
@@ -134,6 +142,9 @@ class Cat extends Animal
 
     public function getLabel()
     {
+        if ($this->countTurns > 8){
+            return "@";
+        }
         return "C";
     }
 }

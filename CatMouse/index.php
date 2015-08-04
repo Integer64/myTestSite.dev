@@ -49,7 +49,7 @@ $y = mt_rand(1, $fieldSize);
 
 $cat1->setLocation(["x" => $x, "y" => $y]);
 
-$game = new Game(5, $field);
+$game = new Game(11, $field);
 $game->start();
 
 

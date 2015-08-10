@@ -1,6 +1,7 @@
 <?php
 namespace Application\CatMouse\classes;
 
+use Application\CatMouse\models\Field;
 use \SplObjectStorage;
 
 abstract class Animal
@@ -14,14 +15,16 @@ abstract class Animal
     private $hashOfAnimal;
     private $naturalEnemies;
     private $fieldSize;
+    private $field;
 
-    public function __construct($fieldOfVision, $cruisingRange, $name, $fieldSize)
+    public function __construct($fieldOfVision, $cruisingRange, $name,  Field $field)
     {
         $this->fieldOfVision = $fieldOfVision;
         $this->cruisingRange = $cruisingRange;
         $this->name = $name;
         $this->hashOfAnimal = spl_object_hash($this);
-        $this->fieldSize = $fieldSize;
+        $this->fieldSize = $field->getSize();
+        $this->field = $field;
     }
 
     public function getCruisingRange()
@@ -69,13 +72,15 @@ abstract class Animal
         return ["x" => $xRange, "y" => $yRange];
     }
 
-    public function lookAround(SplObjectStorage $listOfAnimals)
+    public function lookAround()
     {
+        $listOfAnimals = clone $this->getField()->getListOfAnimals();
+
         $seeAnimals = new SplObjectStorage();
         $range = $this->getRangeView();
 
         foreach ($listOfAnimals as $animal) {
-            if (spl_object_hash($animal) === $this->hashOfAnimal) continue;
+            if ($animal === $this) continue;
 
             $animalLocation = $animal->getLocation();
 
@@ -86,6 +91,7 @@ abstract class Animal
                 $seeAnimals->attach($animal);
             }
         }
+
         $this->setSeeAnimals($seeAnimals);
     }
 
@@ -104,24 +110,25 @@ abstract class Animal
         return $this->fieldSize;
     }
 
+    public function getField()
+    {
+        return $this->field;
+    }
+
     protected function goUp(){
         $this->location["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
-        echo "Go up\n";
     }
 
     protected function goDown(){
         $this->location["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
-        echo "Go down\n";
     }
 
     protected function goLeft(){
         $this->location["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
-        echo "Go left\n";
     }
 
     protected function goRight(){
         $this->location["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
-        echo "Go right\n";
     }
 
     abstract public function walk();

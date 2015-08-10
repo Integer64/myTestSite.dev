@@ -13,14 +13,14 @@ mb_internal_encoding("UTF-8");
 // Подключине функции автоматического подключения классов и моделей
 require_once __DIR__ . '/autoload.php';
 
-$fieldSize = 30;
+$fieldSize = 25;
 
 $field = new Field($fieldSize);
-$mouse1 = new Mouse(9, 1, "Mouse1", $fieldSize);
-$mouse2 = new Mouse(9, 1, "Mouse2", $fieldSize);
-$mouse3 = new Mouse(9, 1, "Mouse3", $fieldSize);
+$mouse1 = new Mouse(9, 1, "Mouse1", $field);
+$mouse2 = new Mouse(9, 1, "Mouse2", $field);
+$mouse3 = new Mouse(9, 1, "Mouse3", $field);
 
-$cat1 = new Cat($fieldSize, 1, "Cat1", $fieldSize);
+$cat1 = new Cat($fieldSize, 1, "Cat1", $field);
 
 $field->addAnimalToField($mouse1);
 $field->addAnimalToField($mouse2);

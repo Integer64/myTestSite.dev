@@ -25,16 +25,9 @@ class Game
 
     private function turn()
     {
-        $listOfAnimals = $this->field->getListOfAnimals();
-
-        $listToAnimal = new \SplObjectStorage();    // Костыли.
-        foreach ($listOfAnimals as $animal) {       // SplObjectStorage не может в рекурсию вроде как.
-            $listToAnimal->attach($animal);         // Как это побороть не знаю.
-        }
-
+        $listOfAnimals = clone $this->field->getListOfAnimals();
         foreach ($listOfAnimals as $animal) {
-            echo "This is: " . $animal->name . "\n";
-            $animal->lookAround($listToAnimal);
+            $animal->lookAround();
             $animal->walk();
         }
 

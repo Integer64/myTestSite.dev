@@ -7,86 +7,109 @@ class Cat extends Animal
 {
     private $naturalEnemies = '\Application\CatMouse\models\Dog';
     private $huntAnimals = '\Application\CatMouse\models\Mouse';
-
+    private $sleep = false;
     private $countTurns = 0;
+    CONST MIN_DISTANCE = 10000;
 
     public function walk()
     {
-        $this->countTurns += 1;
-        if ($this->countTurns > 9){
-            $this->countTurns = 1;
+
+        if ($this->countTurns > 8) {
+            $this->sleep = false;
+            $this->countTurns = 0;
         }
-        if ($this->countTurns > 8) return;
+
+        $this->countTurns += 1;
+        if ($this->countTurns == 8) {
+            $this->sleep = true;
+        }
+
+        if ($this->sleep) {
+            return;
+        }
+
+
 
         $location = $this->getLocation();
         $seeAnimals = $this->getSeeAnimals();
         $huntAnimals = $this->huntAnimals;
 
+        $nearAnimal = $seeAnimals->current();
+        $minDistance = static::MIN_DISTANCE;
+
         foreach ($seeAnimals as $animal) {
             if ($animal instanceof $huntAnimals) {
                 $locationPrey = $animal->getLocation();
-                switch (true) {
-                    // Мышка вверху и слева
-                    case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] < $location["y"]):
-                        $this->goUp();
-                        $this->goLeft();
-                        echo "Mouse is up and left\n";
-                        return;
-                        break;
-                    // Мышка вверху и справа
-                    case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] < $location["y"]):
-                        $this->goUp();
-                        $this->goRight();
-                        echo "Mouse is up and right\n";
-                        return;
-                        break;
-                    // Мышка внизу и слева
-                    case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] > $location["y"]):
-                        $this->goDown();
-                        $this->goLeft();
-                        echo "Mouse is down and left\n";
-                        return;
-                        break;
-                    // Мышка внизу и слева
-                    case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] > $location["y"]):
-                        $this->goDown();
-                        $this->goRight();
-                        echo "Mouse is down and right\n";
-                        return;
-                        break;
-                    // Мышка внизу
-                    case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] > $location["y"]):
-                        $this->goDown();
-                        echo "Mouse is down\n";
-                        return;
-                        break;
-                    // Мышка вверху
-                    case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] < $location["y"]):
-                        $this->goUp();
-                        echo "Mouse is up\n";
-                        return;
-                        break;
-                    // Мышка справа
-                    case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] == $location["y"]):
-                        $this->goRight();
-                        echo "Mouse is right\n";
-                        return;
-                        break;
-                    // Мышка слева
-                    case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] == $location["y"]):
-                        $this->goLeft();
-                        echo "Mouse is left\n";
-                        return;
-                        break;
-                    // Мышку не видно
-                    default:
-                        echo "Can't see where is Mouse\n";
-                        break;
+                $distance = pow($location["x"] - $locationPrey["x"], 2) + pow($location["y"] - $locationPrey["y"], 2);
+
+                echo $animal->name . " " . $locationPrey["x"] . " " . $locationPrey["y"] . " Distance: " . $distance . "\n";
+                if ($distance < $minDistance) {
+                    $nearAnimal = $animal;
+                    $minDistance = $distance;
                 }
             }
         }
 
-        $this->randomWalk();
+        $locationPrey = $nearAnimal->getLocation();
+        switch (true) {
+            // Мышка вверху и слева
+            case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] < $location["y"]):
+                $this->goUp();
+                $this->goLeft();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышка вверху и справа
+            case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] < $location["y"]):
+                $this->goUp();
+                $this->goRight();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышка внизу и слева
+            case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] > $location["y"]):
+                $this->goDown();
+                $this->goLeft();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышка внизу и слева
+            case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] > $location["y"]):
+                $this->goDown();
+                $this->goRight();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышка внизу
+            case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] > $location["y"]):
+                $this->goDown();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышка вверху
+            case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] < $location["y"]):
+                $this->goUp();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышка справа
+            case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] == $location["y"]):
+                $this->goRight();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышка слева
+            case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] == $location["y"]):
+                $this->goLeft();
+                $this->eat($nearAnimal);
+                return;
+                break;
+            // Мышку не видно
+            default:
+                break;
+        }
+
+      //  $this->randomWalk();
     }
 
     // Выбор случайного направления
@@ -140,9 +163,24 @@ class Cat extends Animal
         }
     }
 
+    // Кушаем мышку
+    private function eat(Animal $nearAnimal){
+        $locationPrey = $nearAnimal->getLocation();
+        $location = $this->getLocation();
+        if($locationPrey["x"] == $location["x"] && $locationPrey["y"] == $location["y"]) {
+            $field = $this->getField();
+            $field->deleteAnimalFromField($nearAnimal);
+            $this->sleep = true;
+            $this->countTurns = 8;
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function getLabel()
     {
-        if ($this->countTurns > 8){
+        if ($this->sleep) {
             return "@";
         }
         return "C";

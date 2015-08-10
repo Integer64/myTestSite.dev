@@ -11,8 +11,8 @@ class Mouse extends Animal
     private $naturalEnemies = '\Application\CatMouse\models\Cat';
     private $friendAnimals = '\Application\CatMouse\models\Dog';
 
-    public function __construct($fieldOfVision, $cruisingRange, $name, $fieldSize){
-        parent::__construct($fieldOfVision, $cruisingRange, $name, $fieldSize);
+    public function __construct($fieldOfVision, $cruisingRange, $name, Field $field){
+        parent::__construct($fieldOfVision, $cruisingRange, $name, $field);
         $this->setFieldOfVision((int)floor($fieldOfVision / 2));
     }
 
@@ -22,10 +22,6 @@ class Mouse extends Animal
         $location = $this->getLocation();
         $seeAnimals = $this->getSeeAnimals();
         $naturalEnemies = $this->naturalEnemies;
-
-        /**
-         *  TODO: Сделать выборку в списке животных в поле зрения, для поиска нужного животного.
-         */
 
         foreach ($seeAnimals as $animal) {
             if ($animal instanceof $naturalEnemies) {
@@ -39,7 +35,6 @@ class Mouse extends Animal
                         } else {
                             $this->goDown();
                         }
-                        echo "Cat is up and left\n";
                         return;
                         break;
                     // Кот вверху и справа
@@ -49,7 +44,6 @@ class Mouse extends Animal
                         } else {
                             $this->goDown();
                         }
-                        echo "Cat is up and right\n";
                         return;
                         break;
                     // Кот внизу и слева
@@ -59,7 +53,6 @@ class Mouse extends Animal
                         } else {
                             $this->goUp();
                         }
-                        echo "Cat is down and left\n";
                         return;
                         break;
                     // Кот внизу и справа
@@ -69,7 +62,6 @@ class Mouse extends Animal
                         } else {
                             $this->goUp();
                         }
-                        echo "Cat is down and right\n";
                         return;
                         break;
                     // Кот внизу
@@ -81,7 +73,6 @@ class Mouse extends Animal
                         } else {
                             $this->goRight();
                         }
-                        echo "Cat is down\n";
                         return;
                         break;
                     // Кот вверху
@@ -93,7 +84,6 @@ class Mouse extends Animal
                         } else {
                             $this->goRight();
                         }
-                        echo "Cat is up\n";
                         return;
                         break;
                     // Кот справо
@@ -105,7 +95,6 @@ class Mouse extends Animal
                         } else {
                             $this->goDown();
                         }
-                        echo "Cat is right\n";
                         return;
                         break;
                     // Кот слева
@@ -117,12 +106,10 @@ class Mouse extends Animal
                         } else {
                             $this->goDown();
                         }
-                        echo "Cat is left\n";
                         return;
                         break;
                     // Не видно кота
                     default:
-                        echo "Can't see where is cat\n";
                         break;
                 }
             }
@@ -161,7 +148,6 @@ class Mouse extends Animal
                 break;
             // Стоим
             default:
-                echo "Stay\n";
                 break;
         }
     }

@@ -3,6 +3,10 @@ namespace Application\CatMouse\models;
 
 use Application\CatMouse\classes\Animal;
 
+/**
+ * TODO: Обзор мыши вокруг: что бы не ходила на занятые клетки.
+ */
+
 class Mouse extends Animal
 {
     CONST DIRECTION_FIRST = 0;
@@ -18,105 +22,116 @@ class Mouse extends Animal
 
     public function walk()
     {
-
-        $location = $this->getLocation();
         $seeAnimals = $this->getSeeAnimals();
         $naturalEnemies = $this->naturalEnemies;
 
+        $animalEnemies = null;
+
         foreach ($seeAnimals as $animal) {
             if ($animal instanceof $naturalEnemies) {
-                $direction = mt_rand(self::DIRECTION_FIRST, self::DIRECTION_SECOND);
-                $locationEnemies = $animal->getLocation();
-                switch (true) {
-                    // Кот вверху и слева
-                    case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] < $location["y"]):
-                        if ($direction > self::DIRECTION_FIRST) {
-                            $this->goRight();
-                        } else {
-                            $this->goDown();
-                        }
-                        return;
-                        break;
-                    // Кот вверху и справа
-                    case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] < $location["y"]):
-                        if ($direction > self::DIRECTION_FIRST) {
-                            $this->goLeft();
-                        } else {
-                            $this->goDown();
-                        }
-                        return;
-                        break;
-                    // Кот внизу и слева
-                    case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] > $location["y"]):
-                        if ($direction > self::DIRECTION_FIRST) {
-                            $this->goRight();
-                        } else {
-                            $this->goUp();
-                        }
-                        return;
-                        break;
-                    // Кот внизу и справа
-                    case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] > $location["y"]):
-                        if ($direction > self::DIRECTION_FIRST) {
-                            $this->goLeft();
-                        } else {
-                            $this->goUp();
-                        }
-                        return;
-                        break;
-                    // Кот внизу
-                    case ($locationEnemies["x"] == $location["x"] && $locationEnemies["y"] > $location["y"]):
-                        if($direction == self::DIRECTION_FIRST) {
-                            $this->goUp();
-                        } elseif ($direction == self::DIRECTION_SECOND) {
-                            $this->goLeft();
-                        } else {
-                            $this->goRight();
-                        }
-                        return;
-                        break;
-                    // Кот вверху
-                    case ($locationEnemies["x"] == $location["x"] && $locationEnemies["y"] < $location["y"]):
-                        if($direction == self::DIRECTION_FIRST) {
-                            $this->goDown();
-                        } elseif ($direction == self::DIRECTION_SECOND) {
-                            $this->goLeft();
-                        } else {
-                            $this->goRight();
-                        }
-                        return;
-                        break;
-                    // Кот справо
-                    case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] == $location["y"]):
-                        if($direction == self::DIRECTION_FIRST) {
-                            $this->goUp();
-                        } elseif ($direction == self::DIRECTION_SECOND) {
-                            $this->goLeft();
-                        } else {
-                            $this->goDown();
-                        }
-                        return;
-                        break;
-                    // Кот слева
-                    case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] == $location["y"]):
-                        if($direction == self::DIRECTION_FIRST) {
-                            $this->goUp();
-                        } elseif ($direction == self::DIRECTION_SECOND) {
-                            $this->goRight();
-                        } else {
-                            $this->goDown();
-                        }
-                        return;
-                        break;
-                    // Не видно кота
-                    default:
-                        break;
-                }
+                $animalEnemies = $animal;
             }
         }
 
-        $this->randomWalk();
+        if(is_null($animalEnemies)){
+            $this->randomWalk();
+        }else{
+            $this->goAwayFromNaturalEnemies($animalEnemies);
+        }
+
     }
+
+    private function goAwayFromNaturalEnemies(Animal $animalEnemies){
+        $location = $this->getLocation();
+        $direction = mt_rand(self::DIRECTION_FIRST, self::DIRECTION_SECOND);
+        $locationEnemies = $animalEnemies->getLocation();
+        switch (true) {
+            // Кот вверху и слева
+            case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] < $location["y"]):
+                if ($direction > self::DIRECTION_FIRST) {
+                    $this->goRight();
+                } else {
+                    $this->goDown();
+                }
+                return;
+                break;
+            // Кот вверху и справа
+            case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] < $location["y"]):
+                if ($direction > self::DIRECTION_FIRST) {
+                    $this->goLeft();
+                } else {
+                    $this->goDown();
+                }
+                return;
+                break;
+            // Кот внизу и слева
+            case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] > $location["y"]):
+                if ($direction > self::DIRECTION_FIRST) {
+                    $this->goRight();
+                } else {
+                    $this->goUp();
+                }
+                return;
+                break;
+            // Кот внизу и справа
+            case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] > $location["y"]):
+                if ($direction > self::DIRECTION_FIRST) {
+                    $this->goLeft();
+                } else {
+                    $this->goUp();
+                }
+                return;
+                break;
+            // Кот внизу
+            case ($locationEnemies["x"] == $location["x"] && $locationEnemies["y"] > $location["y"]):
+                if($direction == self::DIRECTION_FIRST) {
+                    $this->goUp();
+                } elseif ($direction == self::DIRECTION_SECOND) {
+                    $this->goLeft();
+                } else {
+                    $this->goRight();
+                }
+                return;
+                break;
+            // Кот вверху
+            case ($locationEnemies["x"] == $location["x"] && $locationEnemies["y"] < $location["y"]):
+                if($direction == self::DIRECTION_FIRST) {
+                    $this->goDown();
+                } elseif ($direction == self::DIRECTION_SECOND) {
+                    $this->goLeft();
+                } else {
+                    $this->goRight();
+                }
+                return;
+                break;
+            // Кот справо
+            case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] == $location["y"]):
+                if($direction == self::DIRECTION_FIRST) {
+                    $this->goUp();
+                } elseif ($direction == self::DIRECTION_SECOND) {
+                    $this->goLeft();
+                } else {
+                    $this->goDown();
+                }
+                return;
+                break;
+            // Кот слева
+            case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] == $location["y"]):
+                if($direction == self::DIRECTION_FIRST) {
+                    $this->goUp();
+                } elseif ($direction == self::DIRECTION_SECOND) {
+                    $this->goRight();
+                } else {
+                    $this->goDown();
+                }
+                return;
+                break;
+            // Не видно кота
+            default:
+                break;
+        }
+    }
+
 
     // Выбор случайного направления
     protected function randomWalk()

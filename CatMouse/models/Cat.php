@@ -66,53 +66,49 @@ class Cat extends Animal
         switch (true) {
             // Мышка вверху и слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->goUp();
-                $this->goLeft();
+                $this->goUpAndLeft($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка вверху и справа
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->goUp();
-                $this->goRight();
+                $this->goUpAndRight($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу и слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->goDown();
-                $this->goLeft();
+                $this->goDownAndLeft($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу и слева
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->goDown();
-                $this->goRight();
+                $this->goDownAndRight($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->goDown();
+                $this->goDown($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка вверху
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->goUp();
+                $this->goUp($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка справа
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] == $location["y"]):
-                $this->goRight();
+                $this->goRight($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] == $location["y"]):
-                $this->goLeft();
+                $this->goLeft($this->huntAnimals);
                 $this->eat($prey);
                 return;
                 break;

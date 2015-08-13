@@ -13,7 +13,7 @@ mb_internal_encoding("UTF-8");
 // Подключине функции автоматического подключения классов и моделей
 require_once __DIR__ . '/autoload.php';
 
-$fieldSize = 25;
+$fieldSize = 5;
 
 $field = new Field($fieldSize);
 $mouse1 = new Mouse(9, 1, "Mouse1", $field);
@@ -49,7 +49,8 @@ $y = mt_rand(1, $fieldSize);
 
 $cat1->setLocation(["x" => $x, "y" => $y]);
 
-$game = new Game(11, $field);
+$turns = 20;
+$game = new Game(20, $field);
 $game->start();
 
 

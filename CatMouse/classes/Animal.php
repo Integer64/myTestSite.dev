@@ -115,20 +115,120 @@ abstract class Animal
         return $this->field;
     }
 
-    protected function goUp(){
-        $this->location["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
+    protected function goUp($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"];
+        $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
     }
 
-    protected function goDown(){
-        $this->location["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
+    protected function goDown($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"];
+        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
     }
 
-    protected function goLeft(){
-        $this->location["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
+    protected function goLeft($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"];
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
     }
 
-    protected function goRight(){
-        $this->location["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
+    protected function goRight($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"];
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
+    }
+
+    protected function goUpAndRight($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
+    }
+
+    protected function goUpAndLeft($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
+    }
+
+    protected function goDownAndRight($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
+    }
+
+    protected function goDownAndLeft($huntAnimals = null){
+        $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
+        $cellContain = $this->checkCells($coordinatesCell);
+        if(!is_null($cellContain)) {
+            if ($cellContain instanceof $huntAnimals) {
+                $this->location = $coordinatesCell;
+            }
+        } else {
+            $this->location = $coordinatesCell;
+        }
+    }
+
+    // Проверить ячейку
+    protected function checkCells($coordinatesCell){
+        $list = $this->getField()->getListOfAnimals();
+        foreach ($list as $animal){
+            $coordinates = $animal->getLocation();
+            if($coordinates["x"] == $coordinatesCell["x"] && $coordinates["y"] == $coordinatesCell["y"]){
+                return $animal;
+            }
+        }
+        return null;
     }
 
     abstract public function walk();

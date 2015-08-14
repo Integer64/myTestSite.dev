@@ -115,106 +115,98 @@ abstract class Animal
         return $this->field;
     }
 
-    protected function goUp($huntAnimals = null){
+    protected function goUp($eat = false){
         $coordinatesCell["x"] = $this->location["x"];
         $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }
 
-    protected function goDown($huntAnimals = null){
+    protected function goDown($eat = false){
         $coordinatesCell["x"] = $this->location["x"];
         $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }
 
-    protected function goLeft($huntAnimals = null){
+    protected function goLeft($eat = false){
         $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"];
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }
 
-    protected function goRight($huntAnimals = null){
+    protected function goRight($eat = false){
         $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"];
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }
 
-    protected function goUpAndRight($huntAnimals = null){
+    protected function goUpAndRight($eat = false){
         $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }
 
-    protected function goUpAndLeft($huntAnimals = null){
+    protected function goUpAndLeft($eat = false){
         $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }
 
-    protected function goDownAndRight($huntAnimals = null){
+    protected function goDownAndRight($eat = false){
         $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }
 
-    protected function goDownAndLeft($huntAnimals = null){
+    protected function goDownAndLeft($eat = false){
         $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
-        if(!is_null($cellContain)) {
-            if ($cellContain instanceof $huntAnimals) {
-                $this->location = $coordinatesCell;
-            }
-        } else {
+        if(is_null($cellContain)){
+            $this->location = $coordinatesCell;
+        }
+        if(!is_null($cellContain) && $eat == true){
             $this->location = $coordinatesCell;
         }
     }

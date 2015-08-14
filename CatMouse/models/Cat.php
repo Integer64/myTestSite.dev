@@ -66,53 +66,62 @@ class Cat extends Animal
         switch (true) {
             // Мышка вверху и слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->goUpAndLeft($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goUpAndLeft(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка вверху и справа
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->goUpAndRight($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goUpAndRight(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу и слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->goDownAndLeft($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goDownAndLeft(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу и слева
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->goDownAndRight($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goDownAndRight(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->goDown($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goDown(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка вверху
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->goUp($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goUp(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка справа
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] == $location["y"]):
-                $this->goRight($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goRight(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] == $location["y"]):
-                $this->goLeft($this->huntAnimals);
+                $this->checkNearCells($prey);
+                $this->goLeft(true);
                 $this->eat($prey);
                 return;
                 break;
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] == $location["y"]):
+                $this->checkNearCells($prey);
                 $this->eat($prey);
                 return;
                 break;
@@ -186,6 +195,32 @@ class Cat extends Animal
         }else{
             return false;
         }
+    }
+
+    private function checkNearCells(Mouse $nearMouse){
+        $countOfNearMouses = 0;
+        $huntAnimals = $this->huntAnimals;
+        $locationMouse = $nearMouse->getLocation();
+        $coordinatesToCheck = $this->generateCoordinates($locationMouse);
+        foreach($coordinatesToCheck as $coordinates){
+            $cell = $this->checkCells($coordinates);
+            if($cell instanceof $huntAnimals){
+                $countOfNearMouses += 1;
+            }
+        }
+        return $countOfNearMouses;
+    }
+
+    private function generateCoordinates($center){
+        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]-1];
+        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]  ];
+        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]+1];
+        $coordinatesToCheck[] = ["x" => $center["x"]   , "y" => $center["y"]+1];
+        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]+1];
+        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]  ];
+        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]-1];
+        $coordinatesToCheck[] = ["x" => $center["x"]   , "y" => $center["y"]-1];
+        return $coordinatesToCheck;
     }
 
     public function getLabel()

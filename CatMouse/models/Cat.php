@@ -41,10 +41,7 @@ class Cat extends Animal
 
         foreach ($seeAnimals as $animal) {
             if ($animal instanceof $huntAnimals) {
-                $locationPrey = $animal->getLocation();
-                $distance = sqrt(pow($location["x"] - $locationPrey["x"], 2) + pow($location["y"] - $locationPrey["y"], 2));
-
-                echo $animal->name . " " . $locationPrey["x"] . " " . $locationPrey["y"] . " Distance: " . $distance . "\n";
+                $distance = $this->getDistanceToAnimal($animal);
                 if ($distance < $minDistance) {
                     $nearAnimal = $animal;
                     $minDistance = $distance;
@@ -63,65 +60,66 @@ class Cat extends Animal
     private function hunt(Animal $prey){
         $location = $this->getLocation();
         $locationPrey = $prey->getLocation();
+        $huntAnimals = $this->huntAnimals;
         switch (true) {
             // Мышка вверху и слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goUpAndLeft(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка вверху и справа
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goUpAndRight(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу и слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goDownAndLeft(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу и слева
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goDownAndRight(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка внизу
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] > $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goDown(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка вверху
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] < $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goUp(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка справа
             case ($locationPrey["x"] > $location["x"] && $locationPrey["y"] == $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goRight(true);
                 $this->eat($prey);
                 return;
                 break;
             // Мышка слева
             case ($locationPrey["x"] < $location["x"] && $locationPrey["y"] == $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->goLeft(true);
                 $this->eat($prey);
                 return;
                 break;
             case ($locationPrey["x"] == $location["x"] && $locationPrey["y"] == $location["y"]):
-                $this->checkNearCells($prey);
+                $this->checkNearCells($prey, $huntAnimals);
                 $this->eat($prey);
                 return;
                 break;
@@ -197,31 +195,7 @@ class Cat extends Animal
         }
     }
 
-    private function checkNearCells(Mouse $nearMouse){
-        $countOfNearMouses = 0;
-        $huntAnimals = $this->huntAnimals;
-        $locationMouse = $nearMouse->getLocation();
-        $coordinatesToCheck = $this->generateCoordinates($locationMouse);
-        foreach($coordinatesToCheck as $coordinates){
-            $cell = $this->checkCells($coordinates);
-            if($cell instanceof $huntAnimals){
-                $countOfNearMouses += 1;
-            }
-        }
-        return $countOfNearMouses;
-    }
 
-    private function generateCoordinates($center){
-        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]-1];
-        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]  ];
-        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]+1];
-        $coordinatesToCheck[] = ["x" => $center["x"]   , "y" => $center["y"]+1];
-        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]+1];
-        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]  ];
-        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]-1];
-        $coordinatesToCheck[] = ["x" => $center["x"]   , "y" => $center["y"]-1];
-        return $coordinatesToCheck;
-    }
 
     public function getLabel()
     {

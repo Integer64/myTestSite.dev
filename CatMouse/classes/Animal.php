@@ -211,6 +211,39 @@ abstract class Animal
         }
     }
 
+    protected function getDistanceToAnimal(Animal $animal){
+        $location = $this->getLocation();
+        $locationPrey = $animal->getLocation();
+        $distance = sqrt(pow($location["x"] - $locationPrey["x"], 2) + pow($location["y"] - $locationPrey["y"], 2));
+        echo $animal->name . " " . $locationPrey["x"] . " " . $locationPrey["y"] . " Distance: " . $distance . "\n";
+        return $distance;
+    }
+
+    protected function checkNearCells(Animal $nearMouse, $checkAnimal){
+        $countOfNearMouses = 0;
+        $locationMouse = $nearMouse->getLocation();
+        $coordinatesToCheck = $this->generateCoordinates($locationMouse);
+        foreach($coordinatesToCheck as $coordinates){
+            $cell = $this->checkCells($coordinates);
+            if($cell instanceof $checkAnimal){
+                $countOfNearMouses += 1;
+            }
+        }
+        return $countOfNearMouses;
+    }
+
+    protected function generateCoordinates($center){
+        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]-1];
+        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]  ];
+        $coordinatesToCheck[] = ["x" => $center["x"]-1 , "y" => $center["y"]+1];
+        $coordinatesToCheck[] = ["x" => $center["x"]   , "y" => $center["y"]+1];
+        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]+1];
+        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]  ];
+        $coordinatesToCheck[] = ["x" => $center["x"]+1 , "y" => $center["y"]-1];
+        $coordinatesToCheck[] = ["x" => $center["x"]   , "y" => $center["y"]-1];
+        return $coordinatesToCheck;
+    }
+
     // Проверить ячейку
     protected function checkCells($coordinatesCell){
         $list = $this->getField()->getListOfAnimals();

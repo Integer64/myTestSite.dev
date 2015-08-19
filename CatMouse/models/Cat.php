@@ -32,7 +32,11 @@ class Cat extends Animal
             return;
         }
 
-        $location = $this->getLocation();
+        echo "\n";
+        echo "Empty cells\n";
+        var_dump($this->whereWeCanWalk());
+        echo "\n";
+
         $seeAnimals = $this->getSeeAnimals();
         $huntAnimals = $this->huntAnimals;
 
@@ -127,6 +131,25 @@ class Cat extends Animal
             default:
                 break;
         }
+    }
+
+    // Проверяем куда можно идти
+    private function whereWeCanWalk(){
+        $location = $this->getLocation();
+        $checkCells = $this->generateCoordinates($location);
+        $emptyCells[] = $location;
+        foreach($checkCells as $cell){
+            $cellStatus = $this->checkCells($cell);
+            if(is_null($cellStatus)){
+                $emptyCells[] = $cell;
+            }
+        }
+        return $emptyCells;
+    }
+
+    // Оценка хода
+    private function appraisal(){
+
     }
 
     // Выбор случайного направления

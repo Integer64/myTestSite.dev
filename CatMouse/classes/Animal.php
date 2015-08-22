@@ -211,18 +211,18 @@ abstract class Animal
         }
     }
 
-    protected function getDistanceToAnimal(Animal $animal){
-        $location = $this->getLocation();
-        $locationPrey = $animal->getLocation();
-        $distance = sqrt(pow($location["x"] - $locationPrey["x"], 2) + pow($location["y"] - $locationPrey["y"], 2));
-        echo $animal->name . " " . $locationPrey["x"] . " " . $locationPrey["y"] . " Distance: " . $distance . "\n";
-        return $distance;
+    protected function getDistanceToAnimal(Animal $animal, $cellCoordinates){
+        $location = $cellCoordinates;
+        $locationCell = $animal->getLocation();
+        $distance = sqrt(pow($location["x"] - $locationCell["x"], 2) + pow($location["y"] - $locationCell["y"], 2));
+        return round($distance, 2);
     }
 
     protected function checkNearCells(Animal $nearAnimal, $checkAnimal){
         $countOfNearAnimals = 0;
         $locationMouse = $nearAnimal->getLocation();
         $coordinatesToCheck = $this->generateCoordinates($locationMouse);
+
         foreach($coordinatesToCheck as $coordinates){
             $cell = $this->checkCells($coordinates);
             if($cell instanceof $checkAnimal){
@@ -247,58 +247,74 @@ abstract class Animal
         $coordinatesToCheck = [];
         $coordinate = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1 ,
                        "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         $coordinate = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1 ,
                        "y" => $center["y"]  ];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         $coordinate = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1 ,
                        "y" => $center["y"] + 1 > $this->fieldSize ? $center["y"] : $center["y"] + 1];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         $coordinate = ["x" => $center["x"]   ,
                        "y" => $center["y"] + 1 > $this->fieldSize ? $center["y"] : $center["y"] + 1];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         $coordinate = ["x" => $center["x"] + 1 > $this->fieldSize ? $center["x"] : $center["x"] + 1 ,
                        "y" => $center["y"] + 1 > $this->fieldSize ? $center["y"] : $center["y"] + 1];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         $coordinate = ["x" => $center["x"] + 1 > $this->fieldSize ? $center["x"] : $center["x"] + 1 ,
                        "y" => $center["y"]  ];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         $coordinate = ["x" => $center["x"] + 1 > $this->fieldSize ? $center["x"] : $center["x"] + 1 ,
                        "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         $coordinate = ["x" => $center["x"]   ,
                        "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
-        $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-        if($isDuplicate == false) {
-            $coordinatesToCheck[] = $coordinate;
+        if (count(array_diff_assoc($center, $coordinate)) != 0) {
+            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+            if ($isDuplicate == false) {
+                $coordinatesToCheck[] = $coordinate;
+            }
         }
 
         return $coordinatesToCheck;

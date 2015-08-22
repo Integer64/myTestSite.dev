@@ -14,6 +14,7 @@ class Cat extends Animal
     private $sleep = false;
     private $countTurns = 0;
     CONST MIN_DISTANCE = 10000;
+    CONST START_POINTS = 100;
 
     public function walk()
     {
@@ -32,32 +33,55 @@ class Cat extends Animal
             return;
         }
 
-        echo "\n";
-        echo "Empty cells\n";
-        var_dump($this->whereWeCanWalk());
-        echo "\n";
+        $listWhereWeCanGo = $this->whereWeCanWalk();
+        $listWithPoints = [];
 
-        $seeAnimals = $this->getSeeAnimals();
-        $huntAnimals = $this->huntAnimals;
+        foreach ($listWhereWeCanGo as $cell){
+            $points = $this->appraisal($cell);
+            $listWithPoints[] = [$cell, round($points)];
+        }
 
-        $nearAnimal = null;
-        $minDistance = static::MIN_DISTANCE;
+        $maxPoints = $listWithPoints[0][1];
+        $dest = $listWithPoints[0][0];
 
-        foreach ($seeAnimals as $animal) {
-            if ($animal instanceof $huntAnimals) {
-                $distance = $this->getDistanceToAnimal($animal);
-                if ($distance < $minDistance) {
-                    $nearAnimal = $animal;
-                    $minDistance = $distance;
-                }
+        foreach($listWithPoints as $item){
+            if($item[1] > $maxPoints){
+                $dest = $item[0];
             }
         }
 
-        if(is_null($nearAnimal)){
-            $this->randomWalk();
-        } else {
-            $this->hunt($nearAnimal);
-        }
+        var_dump($dest);
+
+//        $list = $this->getField()->getListOfAnimals();
+
+//        foreach ($list as $animal) {
+//            echo "\n" . $animal->name . " x = " . $animal->getLocation()["x"] . " y = ". $animal->getLocation()["y"] . " \n";
+//        }
+//        echo "\n";
+//
+
+
+//        $seeAnimals = $this->getSeeAnimals();
+//        $huntAnimals = $this->huntAnimals;
+//
+//        $nearAnimal = null;
+//        $minDistance = static::MIN_DISTANCE;
+//
+//        foreach ($seeAnimals as $animal) {
+//            if ($animal instanceof $huntAnimals) {
+//                $distance = $this->getDistanceToAnimal($animal, $this->getLocation());
+//                if ($distance < $minDistance) {
+//                    $nearAnimal = $animal;
+//                    $minDistance = $distance;
+//                }
+//            }
+//        }
+//
+//        if(is_null($nearAnimal)){
+//            $this->randomWalk();
+//        } else {
+//            $this->hunt($nearAnimal);
+//        }
     }
 
     // Охотимся на жертву
@@ -135,12 +159,13 @@ class Cat extends Animal
 
     // Проверяем куда можно идти
     private function whereWeCanWalk(){
+        $huntAnimals = $this->huntAnimals;
         $location = $this->getLocation();
         $checkCells = $this->generateCoordinates($location);
         $emptyCells[] = $location;
         foreach($checkCells as $cell){
             $cellStatus = $this->checkCells($cell);
-            if(is_null($cellStatus)){
+            if(is_null($cellStatus) || $cellStatus instanceof $huntAnimals){
                 $emptyCells[] = $cell;
             }
         }
@@ -148,8 +173,34 @@ class Cat extends Animal
     }
 
     // Оценка хода
-    private function appraisal(){
-
+    private function appraisal($cell){
+        $pointsCell = 0;
+        $points = 0;
+        $seeAnimals = $this->getSeeAnimals();
+        $huntAnimals = $this->huntAnimals;
+        echo "function appraisal \n";
+        echo "\n cell coordinates x = " . $cell["x"] . " y = " . $cell["y"] . "\n";
+        foreach ($seeAnimals as $animal) {
+            if ($animal instanceof $huntAnimals) {
+                $distance = $this->getDistanceToAnimal($animal, $cell);
+                if($distance == 0){
+                    $startPoints = static::START_POINTS * 2;
+                }else {
+                    $startPoints = static::START_POINTS;
+                }
+                $countNearAnimals = $this->checkNearCells($animal, $huntAnimals);
+                if($countNearAnimals == 2){
+                    $points = ($startPoints - $distance) / $countNearAnimals;;
+                    $pointsCell += ($startPoints - $distance) / $countNearAnimals;
+                } else {
+                    $points = $startPoints - $distance;
+                    $pointsCell += $startPoints - $distance;
+                }
+                echo "\nPoints for $animal->name $points \n Near Animal count: $countNearAnimals \n";
+            }
+        }
+        echo "Points $pointsCell\n";
+        return $pointsCell;
     }
 
     // Выбор случайного направления

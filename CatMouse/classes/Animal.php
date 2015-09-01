@@ -14,7 +14,6 @@ abstract class Animal
     private $seeAnimals;
     private $hashOfAnimal;
     private $naturalEnemies;
-    private $fieldSize;
     private $field;
 
     public function __construct($fieldOfVision, $cruisingRange, $name,  Field $field)
@@ -23,7 +22,6 @@ abstract class Animal
         $this->cruisingRange = $cruisingRange;
         $this->name = $name;
         $this->hashOfAnimal = spl_object_hash($this);
-        $this->fieldSize = $field->getSize();
         $this->field = $field;
     }
 
@@ -105,11 +103,6 @@ abstract class Animal
         $this->seeAnimals = $seeAnimals;
     }
 
-    public function getFieldSize()
-    {
-        return $this->fieldSize;
-    }
-
     public function getField()
     {
         return $this->field;
@@ -129,7 +122,7 @@ abstract class Animal
 
     protected function goDown($eat = false){
         $coordinatesCell["x"] = $this->location["x"];
-        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["y"] + $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
         if(is_null($cellContain)){
             $this->location = $coordinatesCell;
@@ -152,7 +145,7 @@ abstract class Animal
     }
 
     protected function goRight($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
+        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["x"] + $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"];
         $cellContain = $this->checkCells($coordinatesCell);
         if(is_null($cellContain)){
@@ -164,7 +157,7 @@ abstract class Animal
     }
 
     protected function goUpAndRight($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
+        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["x"] + $this->cruisingRange;
         $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
         if(is_null($cellContain)){
@@ -188,8 +181,8 @@ abstract class Animal
     }
 
     protected function goDownAndRight($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["x"] + $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
+        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["x"] + $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["y"] + $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
         if(is_null($cellContain)){
             $this->location = $coordinatesCell;
@@ -201,7 +194,7 @@ abstract class Animal
 
     protected function goDownAndLeft($eat = false){
         $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->fieldSize ? $this->fieldSize : $this->location["y"] + $this->cruisingRange;
+        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["y"] + $this->cruisingRange;
         $cellContain = $this->checkCells($coordinatesCell);
         if(is_null($cellContain)){
             $this->location = $coordinatesCell;
@@ -243,77 +236,38 @@ abstract class Animal
         return false;
     }
 
-    protected function generateCoordinates($center){
+    protected function generateCoordinates($center)
+    {
         $coordinatesToCheck = [];
-        $coordinate = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1 ,
-                       "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
-            }
-        }
+        $coordinates[] = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1,
+            "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
 
-        $coordinate = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1 ,
-                       "y" => $center["y"]  ];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
-            }
-        }
+        $coordinates[] = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1,
+            "y" => $center["y"]];
 
-        $coordinate = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1 ,
-                       "y" => $center["y"] + 1 > $this->fieldSize ? $center["y"] : $center["y"] + 1];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
-            }
-        }
+        $coordinates[] = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1,
+            "y" => $center["y"] + 1 > $this->field->getSize() ? $center["y"] : $center["y"] + 1];
 
-        $coordinate = ["x" => $center["x"]   ,
-                       "y" => $center["y"] + 1 > $this->fieldSize ? $center["y"] : $center["y"] + 1];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
-            }
-        }
+        $coordinates[] = ["x" => $center["x"],
+            "y" => $center["y"] + 1 > $this->field->getSize() ? $center["y"] : $center["y"] + 1];
 
-        $coordinate = ["x" => $center["x"] + 1 > $this->fieldSize ? $center["x"] : $center["x"] + 1 ,
-                       "y" => $center["y"] + 1 > $this->fieldSize ? $center["y"] : $center["y"] + 1];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
-            }
-        }
+        $coordinates[] = ["x" => $center["x"] + 1 > $this->field->getSize() ? $center["x"] : $center["x"] + 1,
+            "y" => $center["y"] + 1 > $this->field->getSize() ? $center["y"] : $center["y"] + 1];
 
-        $coordinate = ["x" => $center["x"] + 1 > $this->fieldSize ? $center["x"] : $center["x"] + 1 ,
-                       "y" => $center["y"]  ];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
-            }
-        }
+        $coordinates[] = ["x" => $center["x"] + 1 > $this->field->getSize() ? $center["x"] : $center["x"] + 1,
+            "y" => $center["y"]];
 
-        $coordinate = ["x" => $center["x"] + 1 > $this->fieldSize ? $center["x"] : $center["x"] + 1 ,
-                       "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
-            }
-        }
+        $coordinates[] = ["x" => $center["x"] + 1 > $this->field->getSize() ? $center["x"] : $center["x"] + 1,
+            "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
 
-        $coordinate = ["x" => $center["x"]   ,
-                       "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
-        if (count(array_diff_assoc($center, $coordinate)) != 0) {
-            $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
-            if ($isDuplicate == false) {
-                $coordinatesToCheck[] = $coordinate;
+        $coordinates[] = ["x" => $center["x"],
+            "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
+        foreach ($coordinates as $coordinate) {
+            if (count(array_diff_assoc($center, $coordinate)) != 0) {
+                $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
+                if ($isDuplicate == false) {
+                    $coordinatesToCheck[] = $coordinate;
+                }
             }
         }
 

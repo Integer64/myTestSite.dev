@@ -30,7 +30,6 @@ class Game
             $animal->lookAround();
             $animal->walk();
         }
-
     }
 
     private function printField()

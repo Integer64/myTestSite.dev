@@ -28,26 +28,19 @@ $field->addAnimalToField($mouse3);
 
 $field->addAnimalToField($cat1);
 
-$x = mt_rand(1, $fieldSize);
-$y = mt_rand(1, $fieldSize);
-
-$mouse1->setLocation(["x" => $x, "y" => $y]);
-
-$x = mt_rand(1, $fieldSize);
-$y = mt_rand(1, $fieldSize);
-
-$mouse2->setLocation(["x" => $x, "y" => $y]);
-
-$x = mt_rand(1, $fieldSize);
-$y = mt_rand(1, $fieldSize);
-
-$mouse3->setLocation(["x" => $x, "y" => $y]);
-
-
-$x = mt_rand(1, $fieldSize);
-$y = mt_rand(1, $fieldSize);
-
-$cat1->setLocation(["x" => $x, "y" => $y]);
+foreach ($field->getListOfAnimals() as $animal) {
+    do {
+        $x = mt_rand(1, $fieldSize);
+        $y = mt_rand(1, $fieldSize);
+        $status = $field->checkCells(["x" => $x, "y" => $y]);
+        if (is_null($status)) {
+            $animal->setLocation(["x" => $x, "y" => $y]);
+            $locationSet = true;
+        } else {
+            $locationSet = false;
+        }
+    }while($locationSet);
+}
 
 $turns = 20;
 $game = new Game(20, $field);

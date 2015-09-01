@@ -9,8 +9,7 @@ use Application\CatMouse\classes\Animal;
 
 class Mouse extends Animal
 {
-    CONST DIRECTION_FIRST = 0;
-    CONST DIRECTION_SECOND = 2;
+    CONST START_POINTS = 100;
 
     private $naturalEnemies = '\Application\CatMouse\models\Cat';
     private $friendAnimals = '\Application\CatMouse\models\Dog';
@@ -22,149 +21,54 @@ class Mouse extends Animal
 
     public function walk()
     {
-        $seeAnimals = $this->getSeeAnimals();
-        $naturalEnemies = $this->naturalEnemies;
+        // Список куда можно сходить
+        $listWhereWeCanGo = $this->whereWeCanWalk();
+        $listWithPoints = [];
+        foreach ($listWhereWeCanGo as $cell){
+            $points = $this->appraisal($cell);
+            $listWithPoints[] = [$cell, round($points)];
+        }
 
-        $animalEnemies = null;
+        $maxPoints = $listWithPoints[0][1];
+        $dest = $listWithPoints[0][0];
 
-        foreach ($seeAnimals as $animal) {
-            if ($animal instanceof $naturalEnemies) {
-                $animalEnemies = $animal;
+        foreach ($listWithPoints as $item) {
+            if ($item[1] > $maxPoints) {
+                $dest = $item[0];
             }
         }
 
-        if(is_null($animalEnemies)){
-            $this->randomWalk();
-        }else{
-            $this->goAwayFromNaturalEnemies($animalEnemies);
-        }
+        $this->setLocation($dest);
 
     }
 
-    private function goAwayFromNaturalEnemies(Animal $animalEnemies){
+    // Проверяем куда можно идти
+    private function whereWeCanWalk(){
         $location = $this->getLocation();
-        $direction = mt_rand(self::DIRECTION_FIRST, self::DIRECTION_SECOND);
-        $locationEnemies = $animalEnemies->getLocation();
-        switch (true) {
-            // Кот вверху и слева
-            case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] < $location["y"]):
-                if ($direction > self::DIRECTION_FIRST) {
-                    $this->goRight();
-                } else {
-                    $this->goDown();
-                }
-                return;
-                break;
-            // Кот вверху и справа
-            case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] < $location["y"]):
-                if ($direction > self::DIRECTION_FIRST) {
-                    $this->goLeft();
-                } else {
-                    $this->goDown();
-                }
-                return;
-                break;
-            // Кот внизу и слева
-            case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] > $location["y"]):
-                if ($direction > self::DIRECTION_FIRST) {
-                    $this->goRight();
-                } else {
-                    $this->goUp();
-                }
-                return;
-                break;
-            // Кот внизу и справа
-            case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] > $location["y"]):
-                if ($direction > self::DIRECTION_FIRST) {
-                    $this->goLeft();
-                } else {
-                    $this->goUp();
-                }
-                return;
-                break;
-            // Кот внизу
-            case ($locationEnemies["x"] == $location["x"] && $locationEnemies["y"] > $location["y"]):
-                if($direction == self::DIRECTION_FIRST) {
-                    $this->goUp();
-                } elseif ($direction == self::DIRECTION_SECOND) {
-                    $this->goLeft();
-                } else {
-                    $this->goRight();
-                }
-                return;
-                break;
-            // Кот вверху
-            case ($locationEnemies["x"] == $location["x"] && $locationEnemies["y"] < $location["y"]):
-                if($direction == self::DIRECTION_FIRST) {
-                    $this->goDown();
-                } elseif ($direction == self::DIRECTION_SECOND) {
-                    $this->goLeft();
-                } else {
-                    $this->goRight();
-                }
-                return;
-                break;
-            // Кот справо
-            case ($locationEnemies["x"] > $location["x"] && $locationEnemies["y"] == $location["y"]):
-                if($direction == self::DIRECTION_FIRST) {
-                    $this->goUp();
-                } elseif ($direction == self::DIRECTION_SECOND) {
-                    $this->goLeft();
-                } else {
-                    $this->goDown();
-                }
-                return;
-                break;
-            // Кот слева
-            case ($locationEnemies["x"] < $location["x"] && $locationEnemies["y"] == $location["y"]):
-                if($direction == self::DIRECTION_FIRST) {
-                    $this->goUp();
-                } elseif ($direction == self::DIRECTION_SECOND) {
-                    $this->goRight();
-                } else {
-                    $this->goDown();
-                }
-                return;
-                break;
-            // Не видно кота
-            default:
-                break;
+        $checkCells = $this->generateCoordinates($location);
+        $emptyCells[] = $location;
+        foreach($checkCells as $cell){
+            $cellStatus = $this->checkCells($cell);
+            if(is_null($cellStatus)){
+                $emptyCells[] = $cell;
+            }
         }
+        return $emptyCells;
     }
 
-
-    // Выбор случайного направления
-    protected function randomWalk()
-    {
-        // Псевдослучайные числа для выбора направления
-        $xRand = mt_rand(-self::RAND_FOR_WALK, self::RAND_FOR_WALK);
-        $yRand = mt_rand(-self::RAND_FOR_WALK, self::RAND_FOR_WALK);
-
-        switch (true) {
-            // Идем вправо
-            case ($xRand == 1 && $yRand == 0):
-                $this->goRight();
-                return;
-                break;
-            // Идем влево
-            case ($xRand == -1 && $yRand == 0):
-                $this->goLeft();
-                return;
-                break;
-            // Идем вниз
-            case ($xRand == 0 && $yRand == 1):
-                $this->goDown();
-                return;
-                break;
-            // Идем вверх
-            case ($xRand == 0 && $yRand == -1):
-                $this->goUp();
-                return;
-                break;
-            // Стоим
-            default:
-                break;
+    // Оценка хода
+    private function appraisal($cell){
+        $pointsCell = 0;
+        $seeAnimals = $this->getSeeAnimals();
+        $naturalEnemies = $this->naturalEnemies;
+        foreach ($seeAnimals as $animal) {
+            if ($animal instanceof $naturalEnemies) {
+                $distance = $this->getDistanceToAnimal($animal, $cell);
+                $startPoints = static::START_POINTS;
+                $pointsCell += $startPoints + $distance;
+            }
         }
+        return $pointsCell;
     }
 
     public function getLabel()
@@ -172,4 +76,4 @@ class Mouse extends Animal
         return "M";
     }
 
-} 
+}

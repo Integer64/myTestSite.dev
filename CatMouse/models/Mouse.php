@@ -37,18 +37,17 @@ class Mouse extends Animal
                 $dest = $item[0];
             }
         }
-
         $this->setLocation($dest);
-
     }
 
     // Проверяем куда можно идти
     private function whereWeCanWalk(){
         $location = $this->getLocation();
-        $checkCells = $this->generateCoordinates($location);
+        $field = $this->getField();
+        $checkCells = $field->generateCoordinates($location);
         $emptyCells[] = $location;
         foreach($checkCells as $cell){
-            $cellStatus = $this->checkCells($cell);
+            $cellStatus = $field->checkCells($cell);
             if(is_null($cellStatus)){
                 $emptyCells[] = $cell;
             }
@@ -59,11 +58,12 @@ class Mouse extends Animal
     // Оценка хода
     private function appraisal($cell){
         $pointsCell = 0;
+        $field = $this->getField();
         $seeAnimals = $this->getSeeAnimals();
         $naturalEnemies = $this->naturalEnemies;
         foreach ($seeAnimals as $animal) {
             if ($animal instanceof $naturalEnemies) {
-                $distance = $this->getDistanceToAnimal($animal, $cell);
+                $distance = $field->getDistanceToAnimalFromCell($animal, $cell);
                 $startPoints = static::START_POINTS;
                 $pointsCell += $startPoints + $distance;
             }

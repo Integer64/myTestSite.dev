@@ -7,12 +7,10 @@ use \SplObjectStorage;
 abstract class Animal
 {
     public $name;
-    CONST RAND_FOR_WALK = 1;
     private $fieldOfVision;
     private $cruisingRange;
     private $location = ["x" => 0, "y" => 0];
     private $seeAnimals;
-    private $hashOfAnimal;
     private $naturalEnemies;
     private $field;
 
@@ -21,7 +19,6 @@ abstract class Animal
         $this->fieldOfVision = $fieldOfVision;
         $this->cruisingRange = $cruisingRange;
         $this->name = $name;
-        $this->hashOfAnimal = spl_object_hash($this);
         $this->field = $field;
     }
 
@@ -108,102 +105,6 @@ abstract class Animal
         return $this->field;
     }
 
-    protected function goUp($eat = false){
-        $coordinatesCell["x"] = $this->location["x"];
-        $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
-    protected function goDown($eat = false){
-        $coordinatesCell["x"] = $this->location["x"];
-        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["y"] + $this->cruisingRange;
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
-    protected function goLeft($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"];
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
-    protected function goRight($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["x"] + $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"];
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
-    protected function goUpAndRight($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["x"] + $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
-    protected function goUpAndLeft($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"] - $this->cruisingRange < 1 ? 1 : $this->location["y"] - $this->cruisingRange;
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
-    protected function goDownAndRight($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["x"] + $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["y"] + $this->cruisingRange;
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
-    protected function goDownAndLeft($eat = false){
-        $coordinatesCell["x"] = $this->location["x"] - $this->cruisingRange < 1 ? 1 : $this->location["x"] - $this->cruisingRange;
-        $coordinatesCell["y"] = $this->location["y"] + $this->cruisingRange > $this->field->getSize() ? $this->field->getSize() : $this->location["y"] + $this->cruisingRange;
-        $cellContain = $this->checkCells($coordinatesCell);
-        if(is_null($cellContain)){
-            $this->location = $coordinatesCell;
-        }
-        if(!is_null($cellContain) && $eat == true){
-            $this->location = $coordinatesCell;
-        }
-    }
-
     protected function getDistanceToAnimal(Animal $animal, $cellCoordinates){
         $location = $cellCoordinates;
         $locationCell = $animal->getLocation();
@@ -239,6 +140,7 @@ abstract class Animal
     protected function generateCoordinates($center)
     {
         $coordinatesToCheck = [];
+
         $coordinates[] = ["x" => $center["x"] - 1 < 1 ? $center["x"] : $center["x"] - 1,
             "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
 
@@ -262,6 +164,7 @@ abstract class Animal
 
         $coordinates[] = ["x" => $center["x"],
             "y" => $center["y"] - 1 < 1 ? $center["y"] : $center["y"] - 1];
+
         foreach ($coordinates as $coordinate) {
             if (count(array_diff_assoc($center, $coordinate)) != 0) {
                 $isDuplicate = $this->checkArrayOnDuplicate($coordinatesToCheck, $coordinate);
@@ -287,8 +190,6 @@ abstract class Animal
     }
 
     abstract public function walk();
-
-    abstract protected function randomWalk();
 
     abstract public function getLabel();
 

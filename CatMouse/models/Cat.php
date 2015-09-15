@@ -6,7 +6,6 @@ use Application\CatMouse\classes\Animal;
 /**
  * TODO: Проверять рядом стоящие клетки с мышью.
  */
-
 class Cat extends Animal
 {
     private $naturalEnemies = '\Application\CatMouse\models\Dog';
@@ -37,46 +36,53 @@ class Cat extends Animal
 
         $listWithPoints = [];
 
-        foreach ($listWhereWeCanGo as $cell){
+        foreach ($listWhereWeCanGo as $cell) {
             $points = $this->appraisal($cell);
-            $listWithPoints[] = [$cell, round($points)];
+            $listWithPoints[] = [$cell, $points];
+            $c[] = $cell;
+            $p[] = $points;
         }
+
+        array_multisort($p, SORT_DESC, $listWithPoints);
 
         $maxPoints = $listWithPoints[0][1];
         $dest = $listWithPoints[0][0];
 
-        if($maxPoints > 0) {
-            foreach ($listWithPoints as $item) {
-                if ($item[1] > $maxPoints) {
-                    $dest = $item[0];
-                }
+
+        foreach ($listWithPoints as $item) {
+            if ($item[1] == $maxPoints) {
+                $listWithMaxPoints[] = [$item[0], $item[1]];
             }
-        } else {
-            $rand = mt_rand(0, count($listWithPoints)-1);
-            $dest = $listWithPoints[$rand][0];
+        }
+
+        if (count($listWithMaxPoints) > 0) {
+            $rand = mt_rand(0, count($listWithMaxPoints) - 1);
+            $dest = $listWithMaxPoints[$rand][0];
         }
 
         $huntAnimals = $this->huntAnimals;
-        $prey = $this->checkCells($dest);
+        $field = $this->getField();
+        $prey = $field->checkCells($dest);
 
-        if(is_null($prey)){
+        if (is_null($prey)) {
             $this->setLocation($dest);
-        } elseif($prey instanceof $huntAnimals) {
+        } elseif ($prey instanceof $huntAnimals) {
             $this->setLocation($dest);
             $this->eat($prey);
         }
-
     }
 
     // Проверяем куда можно идти
-    private function whereWeCanWalk(){
+    private function whereWeCanWalk()
+    {
         $huntAnimals = $this->huntAnimals;
         $location = $this->getLocation();
-        $checkCells = $this->generateCoordinates($location);
+        $field = $this->getField();
+        $checkCells = $field->generateCoordinates($location);
         $emptyCells[] = $location;
-        foreach($checkCells as $cell){
-            $cellStatus = $this->checkCells($cell);
-            if(is_null($cellStatus) || $cellStatus instanceof $huntAnimals){
+        foreach ($checkCells as $cell) {
+            $cellStatus = $field->checkCells($cell);
+            if (is_null($cellStatus) || $cellStatus instanceof $huntAnimals) {
                 $emptyCells[] = $cell;
             }
         }
@@ -84,21 +90,24 @@ class Cat extends Animal
     }
 
     // Оценка хода
-    private function appraisal($cell){
+    private function appraisal($cell)
+    {
         $pointsCell = 0;
-
+        $field = $this->getField();
         $seeAnimals = $this->getSeeAnimals();
         $huntAnimals = $this->huntAnimals;
         foreach ($seeAnimals as $animal) {
             if ($animal instanceof $huntAnimals) {
-                $distance = $this->getDistanceToAnimal($animal, $cell);
-                if($distance == 0){
+                $distance = $field->getDistanceToAnimalFromCell($animal, $cell);
+                $countNearAnimals = $field->checkNearCells($cell, $huntAnimals);
+
+                if ($distance == 0) {
                     $startPoints = static::START_POINTS * 2;
                 } else {
                     $startPoints = static::START_POINTS;
                 }
-                $countNearAnimals = $this->checkNearCells($animal, $huntAnimals);
-                if($countNearAnimals == 2){
+
+                if ($countNearAnimals == 2) {
                     $pointsCell += ($startPoints - $distance) / $countNearAnimals;
                 } else {
                     $pointsCell += $startPoints - $distance;
@@ -110,20 +119,20 @@ class Cat extends Animal
 
 
     // Кушаем мышку
-    private function eat(Animal $prey){
+    private function eat(Animal $prey)
+    {
         $locationPrey = $prey->getLocation();
         $location = $this->getLocation();
-        if($locationPrey["x"] == $location["x"] && $locationPrey["y"] == $location["y"]) {
+        if ($locationPrey["x"] == $location["x"] && $locationPrey["y"] == $location["y"]) {
             $field = $this->getField();
             $field->deleteAnimalFromField($prey);
             $this->sleep = true;
             $this->countTurns = 8;
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-
 
 
     public function getLabel()

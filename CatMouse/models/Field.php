@@ -37,21 +37,22 @@ class Field
         return $this->size;
     }
 
-    public function getDistanceToAnimalFromCell(Animal $animal, $cellCoordinates){
+    public function getDistanceToAnimalFromCell(Animal $animal, $cellCoordinates)
+    {
         $location = $cellCoordinates;
         $locationCell = $animal->getLocation();
         $distance = sqrt(pow($location["x"] - $locationCell["x"], 2) + pow($location["y"] - $locationCell["y"], 2));
-        return round($distance, 2);
+        return $distance;
     }
 
-    public function checkNearCells(Animal $nearAnimal, $checkAnimal){
+    public function checkNearCells($cells, $checkAnimal)
+    {
         $countOfNearAnimals = 0;
-        $locationMouse = $nearAnimal->getLocation();
+        $locationMouse = $cells;
         $coordinatesToCheck = $this->generateCoordinates($locationMouse);
-
-        foreach($coordinatesToCheck as $coordinates){
+        foreach ($coordinatesToCheck as $coordinates) {
             $cell = $this->checkCells($coordinates);
-            if($cell instanceof $checkAnimal){
+            if ($cell instanceof $checkAnimal) {
                 $countOfNearAnimals += 1;
             }
         }
@@ -59,10 +60,11 @@ class Field
     }
 
     // Проверить массив на дубликаты
-    private function checkArrayOnDuplicate($array, $checkValue){
-        foreach($array as $value){
+    private function checkArrayOnDuplicate($array, $checkValue)
+    {
+        foreach ($array as $value) {
             $arr = array_diff_assoc($value, $checkValue);
-            if(count($arr) == 0){
+            if (count($arr) == 0) {
                 return true;
             }
         }
@@ -105,16 +107,16 @@ class Field
                 }
             }
         }
-
         return $coordinatesToCheck;
     }
 
     // Проверить ячейку
-    public function checkCells($coordinatesCell){
-        $list = $this->getListOfAnimals();
-        foreach ($list as $animal){
+    public function checkCells($coordinatesCell)
+    {
+        $listOfAnimals = $this->getListOfAnimals();
+        foreach ($listOfAnimals as $animal) {
             $coordinates = $animal->getLocation();
-            if($coordinates["x"] == $coordinatesCell["x"] && $coordinates["y"] == $coordinatesCell["y"]){
+            if ($coordinates["x"] == $coordinatesCell["x"] && $coordinates["y"] == $coordinatesCell["y"]) {
                 return $animal;
             }
         }
